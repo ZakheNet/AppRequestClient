@@ -1,22 +1,52 @@
 import { Dimensions, Platform, StyleSheet } from "react-native";
 
 const CSS = StyleSheet.create({
-  Container: { flex: 1, backgroundColor: "rgb(139, 139, 139)" },
+  /* MAIN */
+  Container: { flex: 1, backgroundColor: "rgb(189, 189, 189)" },
 
   SubContainer: {
     justifyContent: "center",
     flex: 1,
   },
 
+  Text: { fontSize: 22, fontWeight: "500" },
+  QzActionBox: {
+    flexDirection: "row",
+    gap: 50,
+    justifyContent: "space-evenly",
+    padding: 8,
+  },
+
+  /* TOP HEADER */
+
   Header: {
+    width: Dimensions.get("window").width,
     backgroundColor: "rgba(189, 52, 52, 1)",
     padding: 5,
     flexDirection: "row",
     alignItems: "center",
     gap: 0,
+    justifyContent: "space-between",
   },
-  HeaderTittle: { fontSize: 25, fontWeight: "700" },
+  AdminHeaderTag: {
+    fontSize: 20,
+    paddingVertical: 4,
+    backgroundColor: "rgba(255, 255, 255, 0.47)",
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    borderWidth: 1,
+    fontWeight: "500",
+    marginRight: 5,
+  },
+  HeaderSplit: { flexDirection: "row", justifyContent: "space-between" },
+  HeaderTittle: { fontSize: 20, fontWeight: "700" },
   menuIcon: { height: 27, width: 40 },
+
+  adminDashboardBox: {},
+
+  RenderedItem: {},
+
+  /* PROGRESS BAR */
 
   ProgressContainer: {
     justifyContent: "center",
@@ -40,46 +70,47 @@ const CSS = StyleSheet.create({
     borderRadius: 40,
     borderColor: "rgba(20, 52, 52, 1)",
   },
+
+  /* REQUEST PAGE */
+
   QzTittle: {
-    fontSize: 30,
+    fontSize: 27,
     fontWeight: "600",
     textAlign: "center",
-    marginTop: 15,
   },
+  feeText: { fontSize: 27, fontWeight: "500", marginHorizontal: 20 },
+  requestIcon: { height: 35, width: 35 },
+
   QuizBox: {
     backgroundColor: "rgba(202, 202, 202, 1)",
     width: Dimensions.get("window").width * 0.95,
     alignSelf: "center",
     borderRadius: 10,
     margin: 15,
+    marginTop: 1,
     height:
-      Dimensions.get("window").height * (Platform.OS === "web" ? 0.87 : 0.8),
+      Dimensions.get("window").height * (Platform.OS === "web" ? 0.84 : 0.77),
     maxWidth: 900,
+    overflow: "scroll",
+    /* Height:Dimensions.get("window").height  */
   },
   ContentBox: {
     backgroundColor: "rgba(236, 236, 236, 1)",
     padding: 15,
     margin: 10,
     flex: 1,
-    overflow: "scroll",
     borderWidth: 0,
   },
 
-  Text: { fontSize: 25, fontWeight: "500" },
-  QzActionBox: {
-    flexDirection: "row",
-    gap: 50,
-    justifyContent: "space-evenly",
-    padding: 8,
-  },
   QzAction: {
     padding: 2,
     paddingHorizontal: 25,
     borderWidth: 2,
     borderRadius: 7,
-    fontSize: 25,
+    fontSize: 22,
     fontWeight: "600",
     width: 120,
+    textAlign: "center",
   },
   QzActionBlank: {
     width: 120,
@@ -87,6 +118,45 @@ const CSS = StyleSheet.create({
 
   QzABack: { backgroundColor: "" },
   QzANext: { backgroundColor: "" },
+  NextDisabled: {
+    borderColor: "rgba(50,50,50,0.4)",
+    color: "rgba(50,50,50,0.4)",
+    backgroundColor: "rgba(255, 255, 255, 0.36)",
+  },
+  quizCheckIcon: { height: 50, width: 50 },
+  quizPointIcon: { height: 20, width: 20 },
+  quizPointFeatureIcon: { height: 17, width: 17 },
+
+  DescriptionInput: {
+    borderWidth: 1,
+    fontSize: 22,
+    maxHeight:
+      Platform.OS === "android" ? 200 : Dimensions.get("window").height,
+    padding: 5,
+  },
+  showDescription: {
+    fontSize: 17,
+    backgroundColor: "rgb(189, 189, 189)",
+    padding: 4,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    fontWeight: "500",
+    borderWidth: 1,
+  },
+  subDescriptionText: { borderWidth: 1, padding: 4, margin: 2 },
+
+  AdditionalInput: { borderWidth: 1, fontSize: 22, padding: 5 },
+  contactItem: { marginBottom: 15 },
+  estimationBox: {
+    backgroundColor: "rgb(109, 189, 243)",
+    padding: 4,
+    paddingHorizontal: 15,
+    marginTop: 15,
+  },
+  submitTotalTxt: { fontSize: 27, fontWeight: "500" },
+  noteEstimationTxt: { fontSize: 20 },
+  submitFeaturesBox: { marginHorizontal: 12 },
+  clientBudgetBox: { margin: 5 },
 
   /* DRAWER */
 
@@ -97,7 +167,20 @@ const CSS = StyleSheet.create({
     gap: 6,
     justifyContent: "flex-end",
   },
-  DrawBackTxt: { fontSize: 20, fontWeight: "500" },
+
+  userIcon: { height: 45, width: 45 },
+  Profile: {
+    backgroundColor: "rgba(255, 255, 255,0.2)",
+    borderRadius: 10,
+    padding: 10,
+    borderWidth: 2,
+    margin: 10,
+    overflow: "hidden",
+  },
+  profileName: { fontSize: 27, fontWeight: "500" },
+  profileEmail: { fontSize: 17, fontWeight: 500 },
+
+  DrawBackTxt: { fontSize: 17, fontWeight: "500" },
   DrawItemsBox: { marginTop: 30 },
   DrawItem: {
     padding: 10,
@@ -106,7 +189,7 @@ const CSS = StyleSheet.create({
     alignItems: "center",
     gap: 5,
   },
-  DrawItemTxt: { fontSize: 25, fontWeight: "500" },
+  DrawItemTxt: { fontSize: 22, fontWeight: "500" },
   DrawIcon: { height: 22, width: 22 },
   RowView: {
     display: "flex",
@@ -117,6 +200,13 @@ const CSS = StyleSheet.create({
   RowViewCenter: {
     display: "flex",
     flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 5,
+  },
+  ColumnViewCenter: {
+    display: "flex",
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
     gap: 5,
@@ -140,7 +230,7 @@ const CSS = StyleSheet.create({
     gap: 6,
   },
   ConnectingTxt: {
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: "900",
     color: "rgba(255,255,255,0.7)",
   },
@@ -155,7 +245,7 @@ const CSS = StyleSheet.create({
     width: Dimensions.get("window").width * 0.5,
     backgroundColor: "rgba(182,52,52,1)",
   },
-  homeActTxt: { fontSize: 30, fontWeight: "500", textAlign: "center" },
+  homeActTxt: { fontSize: 27, fontWeight: "500", textAlign: "center" },
   HomeReq: {
     height: 90,
     width: Dimensions.get("window").width * 0.7,
@@ -163,6 +253,16 @@ const CSS = StyleSheet.create({
   },
   HomeMainIcon: { height: 42, width: 42 },
   HomeSubIcon: { height: 27, width: 27 },
+
+  devMessageBox: {
+    marginTop:10,
+    backgroundColor: "rgba(182,52,52,1)",
+    width: Dimensions.get("window").width * 0.7,
+    borderRadius:5,borderWidth:1,
+  },
+  devMessageTitle: { fontSize: 20,textAlign:"center" },
+  devMessage:{},
+  devMessageTxt:{backgroundColor:"rgb(230, 230, 230)",padding:4,margin:5,fontWeight:"500",fontSize:17,borderWidth:1},
 
   /* FAQ */
 
@@ -178,7 +278,7 @@ const CSS = StyleSheet.create({
   },
   Faqs: { gap: 5 },
   FAQItem: {},
-  FAQAns: { fontSize: 25, marginHorizontal: 27 },
+  FAQAns: { fontSize: 22, marginHorizontal: 27 },
   FaqTittleIcon: { height: 40, width: 40 },
   BackBox: { gap: 5, flexDirection: "row", alignItems: "center", margin: 5 },
   FaqTittleBox: {
@@ -189,13 +289,13 @@ const CSS = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  FaqTittleMainTxt: { fontSize: 30, fontWeight: "500" },
-  FaqTittleTxt: { fontSize: 25, fontWeight: "500" },
+  FaqTittleMainTxt: { fontSize: 27, fontWeight: "500" },
+  FaqTittleTxt: { fontSize: 22, fontWeight: "500" },
   dropIcon: { height: 20, width: 20 },
 
   /* AUTHONTICATE */
   AuthContainer: { flex: 1 },
-  AuthTittle: { fontWeight: "600", fontSize: 30, textAlign: "center" },
+  AuthTittle: { fontWeight: "600", fontSize: 27, textAlign: "center" },
   AuthInfoBox: {
     maxWidth: 700,
     alignSelf: "center",
@@ -226,7 +326,7 @@ const CSS = StyleSheet.create({
     maxWidth: 400,
     alignSelf: "center",
   },
-  AuthSubmitTxt: { fontSize: 25, fontWeight: "600", textAlign: "center" },
+  AuthSubmitTxt: { fontSize: 22, fontWeight: "600", textAlign: "center" },
   AuthTittleIcon: { height: 30, width: 30 },
   AuthCheckIcon: { height: 27, width: 27 },
   AuthTNCTxt: { fontSize: 22, fontWeight: "500", color: "rgb(0, 0, 0)" },
@@ -238,7 +338,7 @@ const CSS = StyleSheet.create({
     padding: 5,
     borderRadius: 5,
   },
-  AuthErrorTxt: { textAlign: "center", color: "white", fontSize: 20 },
+  AuthErrorTxt: { textAlign: "center", color: "white", fontSize: 17 },
 
   /* TERMS AND CONDITIONS */
 
@@ -280,6 +380,10 @@ const CSS = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.05)",
     padding: 5,
   },
+  topic: { marginBottom: 10 },
+  UAContainer: {},
+  UATittle: { fontSize: 22, fontWeight: "500" },
+  subText: { fontSize: 17 },
 
   /*AUTH RESULTS MESSAGE */
 
@@ -290,14 +394,76 @@ const CSS = StyleSheet.create({
     justifyContent: "center",
   },
   ResultModalBox: {
-    borderWidth:5,
-    borderColor:"rgb(0, 158, 66)",
+    borderWidth: 5,
+    borderColor: "rgb(0, 158, 66)",
     height: 150,
     width: Dimensions.get("window").width * 0.9,
     backgroundColor: "rgb(238, 238, 238)",
-    borderRadius: 5,alignItems:"center",justifyContent:"center",
-    elevation: 5,},
-  ResultTittle: {fontWeight: "600", fontSize: 30, textAlign: "center" },
+    borderRadius: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    elevation: 5,
+  },
+  ResultTittle: { fontWeight: "600", fontSize: 27, textAlign: "center" },
+
+  /* RATES */
+
+  rateAmount: { fontWeight: "600" },
+  changeCurrency: {
+    backgroundColor: "rgb(0, 129, 250)",
+    padding: 5,
+    borderRadius: 5,
+    marginRight: 10,
+    fontSize: 17,
+    fontWeight: "bold",
+    elevation: 7,
+  },
+  ratesTopic: {
+    fontWeight: "600",
+    fontSize: 22,
+    textDecorationLine: "underline",
+    paddingLeft: 5,
+  },
+  rateItem: { borderBottomWidth: 1, padding: 10 },
+  rateItemTxt: { fontSize: 17 },
+  rateItemExplain: { fontSize: 15 },
+  rateModalContainer: {
+    width: Dimensions.get("window").width * 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(50, 50, 50, 0.25)",
+    flex: 1,
+  },
+  rateModalBox: {
+    width: Dimensions.get("window").width * 0.8,
+    backgroundColor: "rgb(0, 92, 230)",
+    padding: 10,
+    borderRadius: 10,
+    height: Dimensions.get("window").height * 0.7,
+  },
+  modalChangeTittle: { fontWeight: "600", fontSize: 27, textAlign: "center" },
+  currencyChoiceBox: {
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    flex: 1,
+    borderRadius: 5,
+  },
+  rateChoiceItem: {
+    borderBottomWidth: 1,
+    fontWeight: 500,
+    fontSize: 17,
+    textAlign: "center",
+    padding: 15,
+  },
+  rateModalBackBox: {
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.08)",
+    flex: 1,
+  },
+
+  /* ADMIN PANEL */
 });
 
 export default CSS;
@@ -321,6 +487,21 @@ Server==============R150, ***
 Maintanance(P/M)====R50,
 
 ]
+ <"none"|"blog"|"game"|"management"|"tool"|"portfolio"|"other"|"landingPage"|"figmaPSDtoCode">
+
+
+ <"none"|"blog"|"game"|"management"|"tool"|"portfolio"|"other"|"landingPage"|"figmaPSDtoCode">
+
+
+
+
+as a solo developer I might miss the deadlines or need extentions to complete the project due to unforseen circumstances such as power outage, equipment failure etc, add a policy or section about deadlines which protect me as a developer and allow me eto make extentions to deadlines when neccesary
+
+
+
+the app during the request process when the user describes the app and chooses features there is a fee or rate which displays the estimated price for the project, as projects can be more complex or less complex the final price may increase or decrease by the developer, so the price at the top or which is shown when submitting the request is not final, add a policy or section about this
+
+
 
 6 Extra Info [
 W-Publish====================R50,***
