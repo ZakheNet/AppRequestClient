@@ -70,6 +70,7 @@ export default function DrawerContent({
       setUser(initData);
       await Storage.setItem("User" + DB, JSON.stringify({ logState: false }));
       setIsLogged(false);
+      CloseDrawer();
     } else {
       CloseDrawer();
       setActivity(ActivityType.Authonticate);

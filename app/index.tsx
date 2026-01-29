@@ -246,6 +246,7 @@ export default function App() {
                 />
               ) : Activity === ActivityType.Home ? (
                 <Home
+                setDevMessage={setDevMessage}
                   User={User}
                   devMessage={devMessage}
                   Activity={Activity}

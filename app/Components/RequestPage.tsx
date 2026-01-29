@@ -157,6 +157,7 @@ export default function Request({
       const newSubmittion = {
         task:"sendRequest",
         from: emailFix(User.email),
+        password:User.password,
         deadline:
           QzDeadline === "3 Days"
             ? "3"
@@ -824,13 +825,14 @@ export default function Request({
             },
           ]}
         >
-          {`${
+          {/* `${
             QzType === "app"
               ? "APP"
               : QzType === "website"
               ? "WEBSITE"
               : "PROJECT"
-          } FEATURES`}
+          } FEATURES` */}
+          FEATURES / SERVICES
         </Text>
         <View>
           <Pressable

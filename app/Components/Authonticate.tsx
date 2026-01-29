@@ -16,7 +16,9 @@ import Axios from "axios";
 const UncheckIcon = require("@/assets/images/icons/unchecked.png");
 const CheckedIcon = require("@/assets/images/icons//checked.png");
 type UserType = { Username?: string; Password: string; Email: string };
-
+function emailFix(text:string) {
+    return (text || "").toLowerCase().replace(/\s+/g, "");
+}
 export default function Auth({
   setDevMessage,
   Activity,
@@ -64,8 +66,11 @@ export default function Auth({
     password: string,
     username: string
   ) {
+
+    const fixedMail = emailFix(email)
+
     setIsLogged(true);
-    setUser({ ...User, password, email, username });
+    setUser({ ...User, password, fixedMail, username });
   }
 
   function SubmitAuth() {
@@ -99,7 +104,9 @@ export default function Auth({
       return;
     }
 
-    const NewUser: UserType = { Username, Password, Email };
+    const fixedMail = emailFix(Email)
+
+    const NewUser: UserType = { Username, Password, Email:fixedMail };
     async function NewUserSend(Data: UserType) {
       try {
         /* const res = await axios.post(HOST + "signup/", Data); */
@@ -111,7 +118,7 @@ export default function Auth({
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               password: Data.Password,
-              email: Data.Email,
+              email: emailFix(Data.Email),
               username: Data.Username,
             }),
           }
@@ -145,7 +152,7 @@ export default function Auth({
                 "User" + DB,
                 JSON.stringify({
                   username: NewUser.Username,
-                  email: NewUser.Email,
+                  email: emailFix(NewUser.Email),
                   password: NewUser.Password,
                   logState: "good",
                 })
@@ -190,7 +197,7 @@ export default function Auth({
       return;
     }
 
-    const LogUser: UserType = { Password: LogPassword, Email: LogEmail };
+    const LogUser: UserType = { Password: LogPassword, Email: emailFix(LogEmail) };
     async function LogUserSend(Data: UserType) {
       try {
         /* const res = await axios.post(HOST + "signup/", Data); */
@@ -202,7 +209,7 @@ export default function Auth({
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               password: Data.Password,
-              email: Data.Email,
+              email: emailFix(Data.Email),
             }),
           }
         );
@@ -226,7 +233,7 @@ export default function Auth({
                 "User" + DB,
                 JSON.stringify({
                   username: data.username,
-                  email: LogUser.Email,
+                  email: emailFix(LogUser.Email),
                   password: LogUser.Password,
                   logState: "good",
                 })
