@@ -34,17 +34,180 @@ export default function FAQ({
         <Text style={[CSS.FaqTittleMainTxt]}>ABOUT</Text>
       </View>
       <View style={[CSS.Faqs]}>
-        <Text style={[CSS.Text,{padding:15,textAlign:"center"}]}>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minima consequatur nulla temporibus consequuntur ex, ab minus, laudantium quos repudiandae, non quae esse maxime? Esse totam molestiae vel sint, voluptate facere!
-          Sapiente sequi, quas ratione porro sed assumenda cupiditate ducimus aut odit eligendi nesciunt eius tenetur quidem vero molestias deleniti deserunt laboriosam amet unde harum vel non. Eligendi excepturi deserunt iste?
-          Ratione tempora maxime ipsa quas culpa esse, iste recusandae a. Sit nisi modi nesciunt est, doloribus officiis veritatis aperiam ex totam excepturi voluptates in expedita nemo saepe, dolorum, possimus voluptate!
-          Sunt nisi molestiae id eligendi distinctio consequuntur sed a beatae laudantium nostrum aliquid eius officiis veritatis laboriosam, suscipit commodi odio, rerum debitis? Ratione nostrum iusto sunt, dolorum consequatur quaerat eius.
-          Incidunt corporis deleniti itaque sint repellat sed ea facilis asperiores ab possimus sapiente totam eveniet repellendus deserunt, quibusdam iure consectetur commodi odio. Ipsum commodi iusto pariatur nulla doloribus labore delectus!
-          Culpa itaque consequuntur sit nostrum sapiente nesciunt quidem, sunt magni saepe nisi dolorum molestias perferendis recusandae rem odit deserunt quia ea repellat praesentium libero perspiciatis incidunt minima rerum! Nobis, alias?
-          Laboriosam, voluptatibus! Inventore aspernatur numquam repellendus rem perferendis quas recusandae illo deserunt, odit corrupti eligendi veniam accusamus necessitatibus quo alias illum cupiditate quidem facilis. Minus iusto unde explicabo qui reiciendis?
-          Laboriosam eos inventore, pariatur necessitatibus dignissimos molestias neque! Ea eligendi quam laudantium minus ut veritatis, tempora delectus. Eius facere esse sint, quo, qui fuga veniam quidem quasi dicta quos voluptates?
+        <Text style={[CSS.Text, { padding: 15, textAlign: "center" }]}>
+          <View>
+            {/* TITLE */}
+            <View style={[CSS.topic]}>
+              <Text style={[{ fontWeight: "600", fontSize: 25 }]}>
+                About App Request
+              </Text>
+              <Text style={[CSS.subText]}>
+                App Request is a digital platform designed to connect
+                individuals and small businesses with reliable app and website
+                development services. Our goal is to make it easy for anyone to
+                turn their ideas into real, working digital products.
+              </Text>
+
+              <Text style={[CSS.subText]}>
+                With App Request, users can submit detailed project requests,
+                select desired features, view estimated pricing, message the
+                developer, and track progress — all in one place.
+              </Text>
+            </View>
+
+            {/* MISSION */}
+            <View style={[CSS.topic]}>
+              <Text style={[{ fontWeight: "600", fontSize: 25 }]}>
+                Our Mission
+              </Text>
+              <Text style={[CSS.subText]}>
+                Our mission is to simplify the app and website development
+                process by providing a transparent, affordable, and
+                user-friendly service for clients worldwide.
+              </Text>
+
+              <Text style={[CSS.subText]}>
+                We aim to help startups, small businesses, students, and
+                upcoming entrepreneurs bring their digital ideas to life.
+              </Text>
+            </View>
+
+            {/* SERVICES */}
+            <View style={[CSS.topic]}>
+              <Text style={[{ fontWeight: "600", fontSize: 25 }]}>
+                What We Do
+              </Text>
+              <Text style={[CSS.subText]}>
+                We provide professional development services including:
+              </Text>
+
+              <Text style={[CSS.subText]}>
+                • Mobile application development{"\n"}• Website design and
+                development{"\n"}• Custom software solutions{"\n"}• Feature
+                integration and maintenance{"\n"}• Project consultation and
+                support
+              </Text>
+
+              <Text style={[CSS.subText]}>
+                Each request is carefully reviewed to ensure quality and
+                reliability.
+              </Text>
+            </View>
+
+            {/* PROCESS */}
+            <View style={[CSS.topic]}>
+              <Text style={[{ fontWeight: "600", fontSize: 25 }]}>
+                How It Works
+              </Text>
+
+              <Text style={[CSS.subText]}>
+                1. Create an account on App Request{"\n"}
+                2. Submit your project idea and requirements{"\n"}
+                3. Receive a review and estimated pricing{"\n"}
+                4. Approve the final quote{"\n"}
+                5. Track development progress{"\n"}
+                6. Receive your completed project
+              </Text>
+
+              <Text style={[CSS.subText]}>
+                Our structured process ensures clarity and smooth communication.
+              </Text>
+            </View>
+
+            {/* WHY CHOOSE */}
+            <View style={[CSS.topic]}>
+              <Text style={[{ fontWeight: "600", fontSize: 25 }]}>
+                Why Choose App Request
+              </Text>
+
+              <Text style={[CSS.subText]}>
+                • Transparent pricing and clear policies{"\n"}• Project
+                customisation during development{"\n"}• Flexible payment plans
+                {"\n"}• Frequent communication and updates{"\n"}• Personalized
+                development solutions{"\n"}
+              </Text>
+
+              <Text style={[CSS.subText]}>
+                We focus on building long-term relationships with our clients.
+              </Text>
+            </View>
+
+            {/* QUALITY */}
+            <View style={[CSS.topic]}>
+              <Text style={[{ fontWeight: "600", fontSize: 25 }]}>
+                Commitment to Quality
+              </Text>
+
+              <Text style={[CSS.subText]}>
+                Every project is developed with attention to detail,
+                performance, compatibility, responsiveness, scalability, and
+                usability. We follow modern development practices to ensure your
+                app or website meets current industry standards.
+              </Text>
+
+              <Text style={[CSS.subText]}>
+                Client satisfaction and project success are our top priorities.
+              </Text>
+            </View>
+
+            {/* INDEPENDENT */}
+            <View style={[CSS.topic]}>
+              <Text style={[{ fontWeight: "600", fontSize: 25 }]}>
+                Independent Development
+              </Text>
+
+              <Text style={[CSS.subText]}>
+                App Request is operated by an independent developer. This allows
+                flexible, customized services and direct communication with
+                clients.
+              </Text>
+
+              <Text style={[CSS.subText]}>
+                Each project receives personal attention and dedicated effort.
+              </Text>
+            </View>
+
+            {/* CONTACT */}
+            <View style={[CSS.topic]}>
+              <Text style={[{ fontWeight: "600", fontSize: 25 }]}>
+                Contact & Support
+              </Text>
+
+              <Text style={[CSS.subText]}>
+                For inquiries, support, or feedback, please contact the
+                developer at:
+              </Text>
+
+              <View>
+                <View style={[CSS.RowViewCenter]}>
+                  <Text>Email:</Text>
+                  <Text dataDetectorType={"email"}>
+                    AppRequestMail@gmail.com
+                  </Text>
+                </View>
+                <View style={[CSS.RowViewCenter]}>
+                  {/* <Text>WhatsApp:</Text>
+                  <Text dataDetectorType={"phoneNumber"}>+27 60 291 9865</Text> */}
+                </View>
+              </View>
+
+              
+            </View>
+
+            {/* CLOSING */}
+            <View style={[CSS.topic]}>
+              <Text style={[{ fontWeight: "600", fontSize: 25 }]}>
+                Final Note
+              </Text>
+
+              <Text style={[CSS.subText,{marginBottom:30}]}>
+                Thank you for choosing App Request. We look forward to working
+                with you and helping you build something amazing.
+              </Text>
+            </View>
+          </View>
         </Text>
-        </View>
+      </View>
     </ScrollView>
   );
 }

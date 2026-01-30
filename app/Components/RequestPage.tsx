@@ -82,7 +82,7 @@ export default function Request({
   const [QzName, setQzName] = useState("");
   const [Submiting, setSubmiting] = useState(false);
   const [SubmitBudget, setSubmitBudget] = useState("");
-  const [SubmitError,setSubmitError]=useState("")
+  const [SubmitError, setSubmitError] = useState("");
 
   const [QzCategory, setQzCategory] = useState<
     | "none"
@@ -103,7 +103,7 @@ export default function Request({
       setOnStep(onStep - 1);
     }
     setCanSubmit(false);
-    setSubmitError("")
+    setSubmitError("");
   }
 
   function GoNext() {
@@ -121,7 +121,7 @@ export default function Request({
   async function GoSubmit() {
     try {
       setSubmiting(true);
-      setSubmitError("")
+      setSubmitError("");
       function emailFix(text: string) {
         return (text || "").toLowerCase().replace(/\s+/g, "");
       }
@@ -155,9 +155,9 @@ export default function Request({
       }
 
       const newSubmittion = {
-        task:"sendRequest",
+        task: "sendRequest",
         from: emailFix(User.email),
-        password:User.password,
+        password: User.password,
         deadline:
           QzDeadline === "3 Days"
             ? "3"
@@ -199,24 +199,19 @@ export default function Request({
       );
       if (res.status === 200) {
         const data = await res.json();
-        console.log(data.reason)
+        console.log(data.reason);
         if (data.state === "good") {
           setResults(TypeResult.requested);
+        } else if (data.state === "bad") {
+          setSubmitError(data.reason);
         }
-        else if (data.state === "bad") {
-          setSubmitError(data.reason)
-        }
-
-      }
-      else{
-          setSubmitError("Submission failed, please try again later")
-
+      } else {
+        setSubmitError("Submission failed, please try again later");
       }
     } catch (error) {
-      setSubmitError("Submission failed, please try again later")
+      setSubmitError("Submission failed, please try again later");
     } finally {
       setSubmiting(false);
-      
     }
   }
 
@@ -888,8 +883,8 @@ export default function Request({
               {QzType === "app"
                 ? "Publish to PlayStore"
                 : QzType === "website"
-                ? "Deploy to web"
-                : "Deploy"}
+                ? "Deploy for me"
+                : "Deploy for me"}
             </Text>
           </Pressable>
 
@@ -906,7 +901,7 @@ export default function Request({
             <Text style={[CSS.Text]}>Emails to users</Text>
           </Pressable>
 
-          {QzType === "app" ? undefined : (
+          {QzType === "app" ? undefined : QzFeatures.deployment? (
             <Pressable
               onPress={() =>
                 setQzFeatures({ ...QzFeatures, domain: !QzFeatures.domain })
@@ -919,7 +914,7 @@ export default function Request({
               />
               <Text style={[CSS.Text]}>{"Website name (Domain)"}</Text>
             </Pressable>
-          )}
+          ):undefined}
           {QzType === "website" ? undefined : (
             <Pressable
               onPress={() =>
@@ -1350,17 +1345,28 @@ export default function Request({
       </View>
 
       <View style={CSS.QuizBox}>
-        
         <View style={[CSS.RowViewCenter, { marginTop: 11 }]}>
           <Image style={[CSS.requestIcon]} source={icons[onStep]} />
           <Text style={CSS.QzTittle}>{Steps[onStep]}</Text>
         </View>
 
         {Quiz[onStep]}
-            {SubmitError===""? undefined:<Text style={[{fontSize:20,color:"red",fontWeight:"bold",textAlign:"center"}]}>{SubmitError}</Text>}
+        {SubmitError === "" ? undefined : (
+          <Text
+            style={[
+              {
+                fontSize: 20,
+                color: "red",
+                fontWeight: "bold",
+                textAlign: "center",
+              },
+            ]}
+          >
+            {SubmitError}
+          </Text>
+        )}
 
         {!Submiting ? (
-          
           <View style={CSS.QzActionBox}>
             <Pressable onPress={GoBack}>
               <Text
@@ -1411,9 +1417,7 @@ export default function Request({
             size={"large"}
           />
         )}
-            
       </View>
-
     </View>
   );
 }

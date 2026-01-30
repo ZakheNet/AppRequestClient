@@ -27,7 +27,7 @@ import AdminPanel from "@/app/Components/AdminPanel";
 import About from "@/app/Components/About";
 
 export const DEV = false;
-export const DB = "Test20 ";
+export const DB = "Test22 ";
 export enum ActivityType {
   "Home",
   "FAQ",
@@ -76,6 +76,7 @@ export default function App() {
   const [TnC, setTnC] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
   const [User, setUser] = useState(initData);
+  const [hideDevText,setHideDevtext]=useState(false)
 
   useEffect(() => {
     async function GetStorage() {
@@ -103,7 +104,7 @@ export default function App() {
   const [onStep, setOnStep] = useState(0);
   const drawerRef: any = useRef(null);
   const [seePolicy, setSeePolicy] = useState(false);
-  const [devMessage, setDevMessage] = useState("");
+  const [devMessage, setDevMessage] = useState(<Text></Text>);
   const [Activity, setActivity] = useState(ActivityType.Home);
   const [menuModal, setModalMenu] = useState(false);
 
@@ -246,6 +247,8 @@ export default function App() {
                 />
               ) : Activity === ActivityType.Home ? (
                 <Home
+                hideDevText={hideDevText}
+                setHideDevtext={setHideDevtext}
                 setDevMessage={setDevMessage}
                   User={User}
                   devMessage={devMessage}

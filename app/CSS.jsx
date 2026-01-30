@@ -220,7 +220,7 @@ const CSS = StyleSheet.create({
     gap: 10,
     alignItems: "center",
     justifyContent: "center",
-    marginVertical: Dimensions.get("window").height * 0.25,
+    /*  marginVertical: Dimensions.get("window").height * 0.25, */
   },
   ConnectingBox: {
     flexDirection: "row",
@@ -255,14 +255,200 @@ const CSS = StyleSheet.create({
   HomeSubIcon: { height: 27, width: 27 },
 
   devMessageBox: {
-    marginTop:10,
+    marginTop: 10,
     backgroundColor: "rgba(182,52,52,1)",
-    width: Dimensions.get("window").width * 0.7,
-    borderRadius:5,borderWidth:1,
+    width: Dimensions.get("window").width * 0.9,
+    maxWidth: 700,
+   maxHeight:Dimensions.get("window").height * 0.4,
+ 
+
+    borderRadius: 5,
+    borderWidth: 1,
   },
-  devMessageTitle: { fontSize: 20,textAlign:"center" },
-  devMessage:{},
-  devMessageTxt:{backgroundColor:"rgb(230, 230, 230)",padding:4,margin:5,fontWeight:"500",fontSize:17,borderWidth:1},
+  devMessageTitle: { fontSize: 20, textAlign: "center" },
+  devMessage: {},
+  devMessageTxt: {
+    borderRadius: 6,
+    backgroundColor: "rgb(204, 204, 204)",
+    padding: 5,
+    margin: 5,
+    fontWeight: "500",
+    fontSize: 18,
+    borderWidth: 1,
+    /* height:
+      Platform.OS === "android"
+        ? undefined
+        : Dimensions.get("window").height * 0.1,
+    maxHeight: Dimensions.get("window").height * 0.5, */
+  },
+  sendBox:{flexDirection:"row",
+    padding: 4,
+    backgroundColor: "rgb(209, 209, 209)",
+    paddingHorizontal: 15,
+    borderRadius: 40,
+    width: 100,
+    justifyContent:"center",alignItems:"center"
+    
+  },
+
+  devMessageActions: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    padding: 2,
+    marginBottom: 6,
+  },
+  devMessageActionText: {
+    fontSize: 18,
+    fontWeight: "600",
+    
+  },
+  replyInput: {
+    margin: 10,
+    backgroundColor: "white",
+    color: "black",
+    fontSize: 20,
+  },
+
+  messageItem: { borderRadius: 5, margin: 5 },
+  replyClient: { backgroundColor: "rgb(30, 211, 141)", padding: 4 },
+  replyAdmin: {},
+  senderName: {
+    fontSize: 18,
+    backgroundColor: "rgba(0, 0, 0, 0.15)",
+    padding: 4,
+  },
+  replyTime: {
+    fontWeight: "bold",
+    fontSize: 15,
+    color: "rgba(0, 0, 0, 0.6)",
+    textAlign: "right",
+    marginTop: 5,
+    padding: 5,
+  },
+
+  /* CLIENT DASHBOARD */
+
+  CliDashContainer: {
+    backgroundColor: "rgb(231, 231, 231)",
+    display: "flex",
+    borderWidth: 2,
+    borderColor: "rgba(50,50,50,1)",
+    borderRadius: 15,
+    padding: 15,
+    width: Dimensions.get("window").width * 0.95,
+    marginTop: 15,
+  },
+  MakePayBox: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 5,
+    backgroundColor: "rgb(45, 160, 16)",
+    borderWidth: 0,
+    elevation: 5,
+    borderRadius: 6,
+    width: Dimensions.get("window").width * 0.8,
+    maxWidth: 600,
+    margin: 10,
+    fontSize: 30,
+    alignSelf: "center",
+  },
+  MakePayText: { fontSize: 20, fontWeight: "500" },
+  DashText: { fontSize: 17 },
+  DashActionText: {
+    marginTop: 10,
+    backgroundColor: "rgb(0, 120, 189)",
+    fontSize: 19,
+    fontWeight: "500",
+    padding: 6,
+  },
+  dashActionsBox: { backgroundColor: "rgb(0, 96, 156)" },
+
+  payModal: {
+    backgroundColor: "rgba(0, 0, 0, 0.34)",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  PayModalBox: {
+    backgroundColor: "rgb(150, 26, 26)",
+    padding: 5,
+    borderRadius: 10,
+    width:Dimensions.get("window").width * 0.95,
+    maxWidth: 600,
+    elevation:5
+  },
+
+  payTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 15,
+    textAlign: "center",
+    color: "#fff",
+  },
+
+  payPriceBox: {
+    backgroundColor: "#112442",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 15,
+    alignItems: "center",
+  },
+
+  payLabel: {
+    color: "#cbd5e1",
+    fontSize: 14,
+  },
+
+  payPrice: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#56ccff",
+    marginTop: 5,
+  },
+
+  payInfoBox: {
+    marginBottom: 20,
+  },
+
+  payInfoText: {
+    color: "#e5e7eb",
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 5,
+  },
+
+  payBtnRow: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+
+  payBtn: {
+    backgroundColor: "#ffffff",
+    borderWidth: 2,
+    borderColor: "#0070ba", // PayPal Blue
+    paddingVertical: 5,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+
+
+
+  payCancelBtn: {
+    backgroundColor: "#334155",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginTop:15,
+
+    alignItems: "center",
+  },
+
+  payCancelText: {
+    color: "#fff",
+    fontSize: 16,
+  },
 
   /* FAQ */
 

@@ -59,8 +59,12 @@ export default function DrawerContent({
     CloseDrawer();
     setActivity(ActivityType.Rates);
   }
+   function GoFAQ() {
+    CloseDrawer();
+    setActivity(ActivityType.FAQ);
+  }
 
-   function GoAbout() {
+  function GoAbout() {
     CloseDrawer();
     setActivity(ActivityType.About);
   }
@@ -70,7 +74,9 @@ export default function DrawerContent({
       setUser(initData);
       await Storage.setItem("User" + DB, JSON.stringify({ logState: false }));
       setIsLogged(false);
+      
       CloseDrawer();
+      setActivity(ActivityType.Home);
     } else {
       CloseDrawer();
       setActivity(ActivityType.Authonticate);
@@ -124,14 +130,7 @@ export default function DrawerContent({
           />
           <Text style={[CSS.DrawItemTxt]}>My Request Status</Text>
         </Pressable> */}
-        {/* <Pressable style={[CSS.DrawItem]}>
-          <Image
-            tintColor={"rgba(0,0,0,1)"}
-            style={[CSS.DrawIcon]}
-            source={UpdateIcon}
-          />
-          <Text style={[CSS.DrawItemTxt]}>Cancel/Update Request</Text>
-        </Pressable> */}
+        
         {/* <Pressable style={[CSS.DrawItem]}>
           <Image
             tintColor={"rgba(0,0,0,1)"}
@@ -148,6 +147,14 @@ export default function DrawerContent({
           />
           <Text style={[CSS.DrawItemTxt]}>Rates</Text>
         </Pressable>
+        <Pressable onPress={GoFAQ} style={[CSS.DrawItem]}>
+          <Image
+            tintColor={"rgba(0,0,0,1)"}
+            style={[CSS.DrawIcon]}
+            source={UpdateIcon}
+          />
+          <Text style={[CSS.DrawItemTxt]}>FAQ</Text>
+        </Pressable> 
         <Pressable onPress={GoAbout} style={[CSS.DrawItem]}>
           <Image
             tintColor={"rgba(0,0,0,1)"}
