@@ -16,13 +16,45 @@ const AppIcon = require("@/assets/images/icons/app.png");
 const payBanner = require("@/assets/images/icons/pal.png");
 const reviewIcon = require("@/assets/images/icons/review.png");
 
-export default function ClientDashboard({ User,RequestStatus }: { User: any,RequestStatus:any }) {
+export type StageType =
+  | "review"
+  | "rejected"
+  | "upfrontHold"
+  | "hold"
+  | "phase1"
+  | "payPhase2"
+  | "phase2"
+  | "phase3"
+  | "finalPay"
+  | "complete";
 
+  function GetStageName(stage:StageType){
+    switch (stage) {
+      case "review": return "In Review"
+      case "rejected": return "Not Approved"
+      case "upfrontHold": return "Upfront Hold"
+      case "phase1": return "Development started"
+      case "payPhase2": return "Mid-development payment"
+      case "phase2": return "Development in progress"
+      case "phase3": return "Finalising development"
+      case "finalPay": return "Finalise payment"
+      case "complete": return "COMPLETED"
+      case "hold": return "Development paused"
+      default: return "This project has been abandoned"
+    }
+  }
+
+  
+export default function ClientDashboard({
+  User,
+  RequestStatus,
+}: {
+  User: any;
+  RequestStatus: any;
+}) {
   const [ShowPayments, setShowPayments] = useState(false);
   const [ShowReqActions, setShowReqAction] = useState(true);
   const [ShowFullDash, setShowFullDash] = useState(true);
-
-
 
   return (
     <View style={[CSS.CliDashContainer]}>
@@ -49,34 +81,48 @@ export default function ClientDashboard({ User,RequestStatus }: { User: any,Requ
             {RequestStatus.appName || "Dashboard"}
           </Text>
         </View>
-        <View style={[{backgroundColor:"rgba(255, 255, 255, 0.48)",marginBottom:7}]}>
+        <View
+          style={[
+            { backgroundColor: "rgba(255, 255, 255, 0.48)", marginBottom: 7 },
+          ]}
+        >
           <View style={[CSS.RowViewCenter, { marginTop: 10 }]}>
             <Image style={[{ height: 30, width: 25 }]} source={reviewIcon} />
             <Text style={[{ fontSize: 23, textAlign: "center" }]}>
-              Status: In {RequestStatus.stage}
+              Status:{GetStageName(RequestStatus.stage)}
             </Text>
           </View>
           <Text style={[CSS.DashText, { textAlign: "center" }]}>
             Your request will be reviewed by the developer
           </Text>
         </View>
-        <Text style={[CSS.DashText]}>Deadline: in 7 days {RequestStatus.deadline}</Text>
+        <Text style={[CSS.DashText]}>
+          Deadline: {RequestStatus.timer} days left
+        </Text>
         <View>
           <Text style={[CSS.DashText]}>Total: ${RequestStatus.fee}</Text>
-          {RequestStatus.budget===""?undefined:<Text style={[CSS.DashText]}>Budget: {RequestStatus.budget}</Text>}
+          {RequestStatus.budget === "" ? undefined : (
+            <Text style={[CSS.DashText]}>Budget: {RequestStatus.budget}</Text>
+          )}
         </View>
 
-        <Text style={[CSS.DashText]}>Remaining balance: ${RequestStatus.balance}</Text>
-        <Pressable
-          style={[CSS.MakePayBox, CSS.RowView]}
-          onPress={() => {
-            setShowPayments(!ShowPayments);
-          }}
-        >
-          <Image style={[CSS.quizPointIcon]} source={payPalIcon} />
-          <Text style={[CSS.MakePayText]}>Make Payment</Text>
-          {/*  <Text style={[CSS.DashText,]}>$50</Text> */}
-        </Pressable>
+        {RequestStatus.stage==="review"?undefined:<Text style={[CSS.DashText]}>
+          Remaining balance: ${RequestStatus.balance}
+        </Text>}
+
+        {RequestStatus.stage === "upfrontHold" ||
+        RequestStatus.stage === "payPhase2" ||
+        RequestStatus.stage === "finalPay" ? (
+          <Pressable
+            style={[CSS.MakePayBox, CSS.RowView]}
+            onPress={() => {
+              setShowPayments(!ShowPayments);
+            }}
+          >
+            <Image style={[CSS.quizPointIcon]} source={payPalIcon} />
+            <Text style={[CSS.MakePayText]}>Make Payment</Text>
+          </Pressable>
+        ) : undefined}
 
         <Modal transparent visible={ShowPayments} animationType="fade">
           <View style={CSS.payModal}>
@@ -96,7 +142,8 @@ export default function ClientDashboard({ User,RequestStatus }: { User: any,Requ
                   You will be redirected to PayPal to make the required payment.
                 </Text>
                 <Text style={CSS.payInfoText}>
-                  After payment, the developer will confirm and start your project.
+                  After payment, the developer will confirm and start your
+                  project.
                 </Text>
               </View>
 
@@ -107,7 +154,7 @@ export default function ClientDashboard({ User,RequestStatus }: { User: any,Requ
                   style={CSS.payBtn}
                   onPress={() => {
                     // Redirect to PayPal
-                    Linking.openURL("https://www.paypal.com");
+                    Linking.openURL("https://paypal.me/AppRequest");
                   }}
                 >
                   {/* <Image resizeMode="contain" style={[{width:250,height:40}]} source={payBanner}/> */}

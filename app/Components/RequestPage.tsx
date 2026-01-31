@@ -158,6 +158,7 @@ export default function Request({
         task: "sendRequest",
         from: emailFix(User.email),
         password: User.password,
+        username:User.username,
         deadline:
           QzDeadline === "3 Days"
             ? "3"

@@ -10,10 +10,9 @@ import {
 } from "react-native";
 import CSS from "@/app/CSS";
 import { useState } from "react";
-import { ActivityType } from "@/app/index";
+import { TypeState } from "@/app/index";
 const comsIcon = require("@/assets/images/icons/communication.png");
 const sendIcon = require("@/assets/images/icons/send.png");
-import { TypeState } from "@/app/Components/HomePage";
 
 export default function Messager({
   isReplying,
@@ -59,9 +58,10 @@ export default function Messager({
         if (res.status === 200) {
           const data = await res.json();
 
-          /*   setDevMessage(data.reason) */
+          
         }
       } catch (error) {
+        console.error(error);
       } finally {
         setSendingReply(false);
       }
@@ -79,19 +79,19 @@ export default function Messager({
   }
 
   return (
-    <View style={[CSS.devMessageBox]}>
+    <View style={[CSS.devMessageBox,{alignSelf:"center"}]}>
       <View style={[CSS.RowViewCenter]}>
         <Image style={[CSS.quizPointIcon]} source={comsIcon} />
         <Text style={[CSS.devMessageTitle]}>Messages</Text>
       </View>
       <ScrollView style={[CSS.devMessage]}>
         <Text style={[CSS.devMessageTxt]}>
-          {hideDevText ? "..." : devMessage}
+          {hideDevText ? <Text>...</Text> :devMessage}
         </Text>
       </ScrollView>
       {SendingReply ? (
         <ActivityIndicator size={"large"} color={"white"} />
-      ) : ReqState === "requested" ? (
+      ) : ReqState === "requested" || (User.role!=="client" && User.role!=="guest")? (
         <View>
           {isReplying ? (
             <ScrollView

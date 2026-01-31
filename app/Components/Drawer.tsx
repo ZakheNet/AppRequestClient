@@ -76,7 +76,7 @@ export default function DrawerContent({
       setIsLogged(false);
       
       CloseDrawer();
-      setActivity(ActivityType.Home);
+      setActivity(ActivityType.Authonticate);
     } else {
       CloseDrawer();
       setActivity(ActivityType.Authonticate);

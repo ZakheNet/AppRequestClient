@@ -9,14 +9,12 @@ import {
   Dimensions,
 } from "react-native";
 import CSS from "@/app/CSS";
-import Messager from "@/app/Components/Messager"
-import { ActivityType } from "@/app/index";
+import Messager from "@/app/Components/Messager";
+import { ActivityType, TypeState } from "@/app/index";
 import Policy from "@/app/Components/Policy";
 import { useEffect, useState } from "react";
 import { TypeResult } from "./GoodResult";
 import ClientDashboard from "@/app/Components/ClientDashboard";
-export  type TypeState = "checking" | "offline" | "requested" | "none";
-
 
 const authIcon = require("@/assets/images/icons/feature.png");
 
@@ -33,7 +31,15 @@ export default function Home({
   isLogged,
   setActivity,
   OpenDrawer,
+  ReqState,
+  setReqState,
+  isReplying,
+  setIsReplying,
 }: {
+  isReplying: boolean;
+  setIsReplying: (x: boolean) => void;
+  setReqState: (x: TypeState) => void;
+  ReqState: TypeState;
   setDevMessage: (x: React.JSX.Element) => void;
   setHideDevtext: (x: boolean) => void;
   hideDevText: boolean;
@@ -60,18 +66,13 @@ export default function Home({
     setActivity(ActivityType.FAQ);
   }
 
-
-  const [ReqState, setReqState] = useState<TypeState>("checking");
   const [RequestStatus, setRequestStatus] = useState({});
-  const [isReplying, setIsReplying] = useState(false);
 
   async function SetUpDashboard(data: any) {
     if (data.message === "" && !devMessage.key?.includes("welcome")) {
       setDevMessage(<Text>{"No messages"}</Text>);
     }
   }
-
-
 
   useEffect(() => {
     CheckUserRequest();
@@ -88,7 +89,6 @@ export default function Home({
                 task: "requestStatus",
                 email: User.email,
                 password: User.password,
-              
               }),
             }
           );
@@ -190,9 +190,16 @@ export default function Home({
       )}
 
       {isLogged ? (
-       
-        <Messager User={User} hideDevText={hideDevText} setIsReplying={setIsReplying} devMessage={devMessage} isReplying={isReplying} ReqState={ReqState} setDevMessage={setDevMessage}
-  setHideDevtext={setHideDevtext}/>
+        <Messager
+          User={User}
+          hideDevText={hideDevText}
+          setIsReplying={setIsReplying}
+          devMessage={devMessage}
+          isReplying={isReplying}
+          ReqState={ReqState}
+          setDevMessage={setDevMessage}
+          setHideDevtext={setHideDevtext}
+        />
       ) : undefined}
 
       <Policy

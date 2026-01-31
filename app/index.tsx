@@ -26,6 +26,7 @@ import Storage from "@react-native-async-storage/async-storage";
 import AdminPanel from "@/app/Components/AdminPanel";
 import About from "@/app/Components/About";
 
+export type TypeState = "checking" | "offline" | "requested" | "none";
 export const DEV = false;
 export const DB = "Test22 ";
 export enum ActivityType {
@@ -41,15 +42,18 @@ export enum ActivityType {
   "AdminPanel",
 }
 
-type AdminType = "King" | "Manager" | "Assistant" | "Dev" | "Guest";
+export type AdminType =
+  | "admin"
+  | "manager"
+  | "assistant"
+  | "developer"
+  | "guest";
 
 export const initData = {
   email: "",
   password: "",
   username: "",
-  hasRequest: false,
-  requestID: "",
-  EnqueryId: "",
+  role: "client",
 };
 
 console.log("KIN");
@@ -76,7 +80,8 @@ export default function App() {
   const [TnC, setTnC] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
   const [User, setUser] = useState(initData);
-  const [hideDevText,setHideDevtext]=useState(false)
+  const [hideDevText, setHideDevtext] = useState(false);
+  const [ReqState, setReqState] = useState<TypeState>("checking");
 
   useEffect(() => {
     async function GetStorage() {
@@ -92,7 +97,12 @@ export default function App() {
             email: res.email,
             password: res.password,
             username: res.username,
+            role: res.role,
           });
+          console.log(res);
+          if (res.role === "admin") {
+            setActivity(ActivityType.AdminPanel);
+          }
         }
       } catch (e) {}
     }
@@ -104,13 +114,10 @@ export default function App() {
   const [onStep, setOnStep] = useState(0);
   const drawerRef: any = useRef(null);
   const [seePolicy, setSeePolicy] = useState(false);
-  const [devMessage, setDevMessage] = useState(<Text></Text>);
+  const [devMessage, setDevMessage] = useState(<Text>No messages</Text>);
   const [Activity, setActivity] = useState(ActivityType.Home);
   const [menuModal, setModalMenu] = useState(false);
-
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [AdminLevel, setAdminLevel] = useState<AdminType>("King");
-
+  const [isReplying, setIsReplying] = useState(false);
   const [Rates, setRates] = useState(initialRates);
 
   useEffect(() => {
@@ -159,13 +166,7 @@ export default function App() {
     }
   }
 
-  function Header({
-    isAdmin,
-    AdminLevel,
-  }: {
-    isAdmin: boolean;
-    AdminLevel: AdminType;
-  }) {
+  function Header({ User }: { User: any }) {
     return (
       <View style={[CSS.Header]}>
         <Pressable style={[CSS.RowView]} onPress={OpenDrawer}>
@@ -176,8 +177,8 @@ export default function App() {
           />
           <Text style={[CSS.HeaderTittle]}>APP REQUEST</Text>
         </Pressable>
-        {isAdmin ? (
-          <Text style={[CSS.AdminHeaderTag]}>{AdminLevel.toUpperCase()}</Text>
+        {User.role === "admin" ? (
+          <Text style={[CSS.AdminHeaderTag]}>{User.role.toUpperCase()}</Text>
         ) : undefined}
       </View>
     );
@@ -214,7 +215,7 @@ export default function App() {
             />
           )}
         >
-          <Header AdminLevel={AdminLevel} isAdmin={isAdmin} />
+          <Header User={User} />
           <ScrollView>
             <Modal transparent animationType="fade" visible={menuModal}>
               <DrawerContent
@@ -247,9 +248,13 @@ export default function App() {
                 />
               ) : Activity === ActivityType.Home ? (
                 <Home
-                hideDevText={hideDevText}
-                setHideDevtext={setHideDevtext}
-                setDevMessage={setDevMessage}
+                  isReplying={isReplying}
+                  setIsReplying={setIsReplying}
+                  setReqState={setReqState}
+                  ReqState={ReqState}
+                  hideDevText={hideDevText}
+                  setHideDevtext={setHideDevtext}
+                  setDevMessage={setDevMessage}
                   User={User}
                   devMessage={devMessage}
                   Activity={Activity}
@@ -264,7 +269,7 @@ export default function App() {
                 <FAQ setActivity={setActivity} />
               ) : Activity === ActivityType.Authonticate ? (
                 <Authonticate
-                setDevMessage={setDevMessage}
+                  setDevMessage={setDevMessage}
                   Activity={Activity}
                   setUser={setUser}
                   User={User}
@@ -279,7 +284,16 @@ export default function App() {
               ) : Activity === ActivityType.Rates ? (
                 <RatesPage Rates={Rates} setActivity={setActivity} />
               ) : Activity === ActivityType.AdminPanel ? (
-                <AdminPanel />
+                <AdminPanel
+                  setIsReplying={setIsReplying}
+                  isReplying={isReplying}
+                  setHideDevtext={setHideDevtext}
+                  setDevMessage={setDevMessage}
+                  devMessage={devMessage}
+                  hideDevText={hideDevText}
+                  ReqState={ReqState}
+                  User={User}
+                />
               ) : Activity === ActivityType.About ? (
                 <About setActivity={setActivity} />
               ) : undefined}

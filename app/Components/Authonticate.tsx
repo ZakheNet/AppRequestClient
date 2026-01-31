@@ -1,7 +1,7 @@
 import GoodResult, { TypeResult } from "@/app/Components/GoodResult";
 import Policy from "@/app/Components/Policy";
 import CSS from "@/app/CSS";
-import { ActivityType, DB, HOST } from "@/app/index";
+import { ActivityType, DB, HOST, AdminType } from "@/app/index";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -30,6 +30,7 @@ export default function Auth({
   setSeePolicy,
   setTnC,
 }: {
+  
   setDevMessage: (x: React.JSX.Element) => void;
   isLogged: boolean;
   Activity: ActivityType;
@@ -62,7 +63,8 @@ export default function Auth({
   async function AuthorizeDevice(
     email: string,
     password: string,
-    username: string
+    username: string,
+    role: string
   ) {
     setIsLogged(true);
     setUser({ ...User, password, email, username });
@@ -148,6 +150,7 @@ export default function Auth({
                   email: NewUser.Email,
                   password: NewUser.Password,
                   logState: "good",
+                  role:"client"
                 })
               );
             } catch (error) {
@@ -157,10 +160,12 @@ export default function Auth({
             await AuthorizeDevice(
               NewUser.Email,
               NewUser.Password,
-              NewUser.Username || "App Request"
+              NewUser.Username || "App Request",
+              "client"
             );
             setDevMessage(
-              <Text>{`Hello ${NewUser.Username}, welcome to App Request! `}</Text>);
+              <Text>{`Hello ${NewUser.Username}, welcome to App Request! `}</Text>
+            );
             setResults(TypeResult.signed);
           }
         } else {
@@ -230,6 +235,7 @@ export default function Auth({
                   email: LogUser.Email,
                   password: LogUser.Password,
                   logState: "good",
+                  role:data.data.role
                 })
               );
             } catch (error) {
@@ -239,11 +245,15 @@ export default function Auth({
             await AuthorizeDevice(
               LogUser.Email,
               LogUser.Password,
-              data.username
+              data.username,
+              data.data.role
             );
             setDevMessage(
               <Text>{`Hello ${data.username}, welcome back to App Request `}</Text>
             );
+            console.log(data);
+            console.log(data.data);
+            console.log(data.data.role);
             setResults(TypeResult.logged);
           }
         } else {

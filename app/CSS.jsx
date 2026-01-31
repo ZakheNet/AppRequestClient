@@ -259,8 +259,7 @@ const CSS = StyleSheet.create({
     backgroundColor: "rgba(182,52,52,1)",
     width: Dimensions.get("window").width * 0.9,
     maxWidth: 700,
-   maxHeight:Dimensions.get("window").height * 0.4,
- 
+    maxHeight: Dimensions.get("window").height * 0.4,
 
     borderRadius: 5,
     borderWidth: 1,
@@ -281,14 +280,15 @@ const CSS = StyleSheet.create({
         : Dimensions.get("window").height * 0.1,
     maxHeight: Dimensions.get("window").height * 0.5, */
   },
-  sendBox:{flexDirection:"row",
+  sendBox: {
+    flexDirection: "row",
     padding: 4,
     backgroundColor: "rgb(209, 209, 209)",
     paddingHorizontal: 15,
     borderRadius: 40,
     width: 100,
-    justifyContent:"center",alignItems:"center"
-    
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   devMessageActions: {
@@ -300,7 +300,6 @@ const CSS = StyleSheet.create({
   devMessageActionText: {
     fontSize: 18,
     fontWeight: "600",
-    
   },
   replyInput: {
     margin: 10,
@@ -373,9 +372,9 @@ const CSS = StyleSheet.create({
     backgroundColor: "rgb(150, 26, 26)",
     padding: 5,
     borderRadius: 10,
-    width:Dimensions.get("window").width * 0.95,
+    width: Dimensions.get("window").width * 0.95,
     maxWidth: 600,
-    elevation:5
+    elevation: 5,
   },
 
   payTitle: {
@@ -433,14 +432,12 @@ const CSS = StyleSheet.create({
     alignItems: "center",
   },
 
-
-
   payCancelBtn: {
     backgroundColor: "#334155",
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
-    marginTop:15,
+    marginTop: 15,
 
     alignItems: "center",
   },
@@ -649,75 +646,137 @@ const CSS = StyleSheet.create({
     flex: 1,
   },
 
+  /* ADMIN DASHBOARD */
+  AdminDashText: { fontSize: 20, fontWeight: "500" },
+  DashAdminBox: {
+    borderWidth: 2,
+    backgroundColor: "rgb(228, 69, 69)",
+    padding: 7,
+    margin: 10,
+    borderRadius: 7,
+  },
+
   /* ADMIN PANEL */
+
+  dashlistItem: {
+    backgroundColor: "#1e1e1e",
+    padding: 15,
+    marginVertical: 6,
+    borderRadius: 10,
+  },
+
+  dashappName: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+
+  dashsmallText: {
+    color: "#bbb",
+    fontSize: 13,
+  },
+
+  dashstage: {
+    marginTop: 5,
+    fontWeight: "bold",
+    color: "white",
+    fontSize: 17,
+  },
+
+  dashapproved: { color: "green" },
+  rejected: { color: "red" },
+  pending: { color: "orange" },
+
+  dashmodalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  dashmodalBox: {
+    width: Dimensions.get("window").width * 0.99,
+    backgroundColor: "#111",
+    padding: 15,
+    maxHeight: Dimensions.get("window").height * 0.9,
+  },
+
+  dashtopButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  dasheditBtn: {
+    backgroundColor: "#2196F3",
+    padding: 6,
+    borderRadius: 6,
+  },
+
+  dashmsgBtn: {
+    backgroundColor: "#4CAF50",
+    padding: 5,
+    minWidth: 150,
+    borderRadius: 6,
+  },
+
+  dashcloseBtn: {
+    color: "red",
+    fontSize: 25,
+    fontWeight: "bold",
+    marginTop: 20,
+  },
+
+  dashmodalTitle: {
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "bold",
+    marginVertical: 10,
+  },
+
+  dashmodalText: {
+    color: "#aaa",
+    marginTop: 8,
+  },
+
+  dashmodalValue: {
+    color: "#fff",
+    marginLeft: 5,
+  },
+
+  dashactionRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 20,
+  },
+
+  dashacceptBtn: {
+    backgroundColor: "green",
+    padding: 12,
+    borderRadius: 8,
+    width: "45%",
+    alignItems: "center",
+  },
+
+  dashrejectBtn: {
+    backgroundColor: "red",
+    padding: 12,
+    borderRadius: 8,
+    width: "45%",
+    alignItems: "center",
+  },
+
+  dashbtnText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 20,
+    width: 150,
+    textAlign: "center",
+  },
+
+  ConfirmAccept: { backgroundColor: "silver", padding: 5, margin: 10 },
+  InputConfirmAccept: { padding: 5, fontSize: 20 },
+  ConfirmAcceptBtn:{fontSize:25,backgroundColor:"rgb(13, 116, 0)",color:"white",fontWeight:"bold",textAlign:"center",width:500,alignSelf:"center",padding:9,borderRadius:7},
 });
 
 export default CSS;
-
-/* 
-1 Welcome
-2 T n C
-2.5 Data [Name, Country]
-3 App / Web / Both [Personal/Commercial,]
-4 Type 
-[Game==============R400, 
-W-BizLandPage======R250, 
-W-Applying=====R200,
-Other==============R0-R500]***
-
-5 Features [
-LogIn Google/Basic==R250/R50,
-A-Offline/Online====R0/R150, ******
-Database============R100, ***
-Server==============R150, ***
-Maintanance(P/M)====R50,
-
-]
- <"none"|"blog"|"game"|"management"|"tool"|"portfolio"|"other"|"landingPage"|"figmaPSDtoCode">
-
-
- <"none"|"blog"|"game"|"management"|"tool"|"portfolio"|"other"|"landingPage"|"figmaPSDtoCode">
-
-
-
-
-as a solo developer I might miss the deadlines or need extentions to complete the project due to unforseen circumstances such as power outage, equipment failure etc, add a policy or section about deadlines which protect me as a developer and allow me eto make extentions to deadlines when neccesary
-
-
-
-the app during the request process when the user describes the app and chooses features there is a fee or rate which displays the estimated price for the project, as projects can be more complex or less complex the final price may increase or decrease by the developer, so the price at the top or which is shown when submitting the request is not final, add a policy or section about this
-
-
-
-6 Extra Info [
-W-Publish====================R50,***
-W-Domain============R150/Y, ***
-W-Hosting===========R/150PM / 1500/Y, 
-A-Publish On Dev Account=====R150,
-A-Publish On Own Account=====R0,
-A-Publish On Own New Account=R700,
-]
-
-7 Deadline [
-1 Week========R250,
-2 Week========R100,***
-1 Month=======R0,
-2 Months======R-150(Discount),
-] 
-
-8 Question
-
-
-
-
-FAQ [
--Source Code
--Updates
--Refund
--Payment Options
--Ownership
--Limitations
-
-]
-
-*/
