@@ -93,7 +93,7 @@ export default function ClientDashboard({
             </Text>
           </View>
           <Text style={[CSS.DashText, { textAlign: "center" }]}>
-            Your request will be reviewed by the developer
+            {RequestStatus.reason}
           </Text>
         </View>
         <Text style={[CSS.DashText]}>
