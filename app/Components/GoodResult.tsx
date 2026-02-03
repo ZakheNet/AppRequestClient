@@ -19,15 +19,10 @@ export default function GoodResult({
 }) {
   const [seeResult, setSeeResult] = useState(true);
 
-/*   setTimeout(() => {
-    setSeeResult(false);
-
-    setActivity(
-      ActivityType.Home
-    );
-
-  }, 
-  2000); */
+  setSeeResult(false);
+  setActivity(ActivityType.Home);
+  setTimeout(() => {
+  }, 2000);
 
   const Message =
     state === TypeResult.logged
