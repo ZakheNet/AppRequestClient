@@ -15,14 +15,19 @@ export default function GoodResult({
   setActivity,
 }: {
   state: TypeResult;
-  setActivity: (x: any) => void;
+  setActivity: (x: ActivityType) => void;
 }) {
   const [seeResult, setSeeResult] = useState(true);
 
-  setTimeout(() => {
+/*   setTimeout(() => {
     setSeeResult(false);
-    setActivity(ActivityType.Home);
-  }, 2000);
+
+    setActivity(
+      ActivityType.Home
+    );
+
+  }, 
+  2000); */
 
   const Message =
     state === TypeResult.logged
