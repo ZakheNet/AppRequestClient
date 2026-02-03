@@ -23,7 +23,11 @@ export default function Messager({
   setHideDevtext,
   hideDevText,
   devMessage,
+  clientEmail,
+  setRefresh,
 }: {
+  setRefresh:(x:number)=>void
+  clientEmail:string |undefined;
   hideDevText: boolean;
   devMessage: React.JSX.Element;
   setDevMessage: (x: React.JSX.Element) => void;
@@ -41,20 +45,29 @@ export default function Messager({
       setSendingReply(true);
       setIsReplying(false);
 
+      console.log(clientEmail)
+
       try {
         const res = await fetch(
-          "https://apprequestserver.netlify.app/.netlify/functions/request",
+          `https://apprequestserver.netlify.app/.netlify/functions/${User.role==="client"?"request":"admin"}`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
+            body: JSON.stringify(User.role==="client"?{
               task: "replyMessage",
               email: User.email,
               message: replyMessage,
               password: User.password,
+            }:{
+              task: "replyClientMessage",
+              email: User.email,
+              message: replyMessage,
+              password: User.password,
+              from:clientEmail===undefined? User.email:clientEmail
             }),
           }
         );
+        console.log(res)
         if (res.status === 200) {
           const data = await res.json();
 
@@ -64,6 +77,7 @@ export default function Messager({
         console.error(error);
       } finally {
         setSendingReply(false);
+        setRefresh(Date.now())
       }
     } else {
       setIsReplying(true);

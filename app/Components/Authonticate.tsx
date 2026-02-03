@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
+  Linking,
+  Platform,
   Pressable,
   Text,
   TextInput,
@@ -30,7 +32,6 @@ export default function Auth({
   setSeePolicy,
   setTnC,
 }: {
-  
   setDevMessage: (x: React.JSX.Element) => void;
   isLogged: boolean;
   Activity: ActivityType;
@@ -59,6 +60,7 @@ export default function Auth({
   const [ConfirmPass, setConfirmPass] = useState("");
   const [AuthError, setAuthError] = useState("");
   const [Results, setResults] = useState(TypeResult.none);
+  const [IsForgotPassword, setIsForgotPassword] = useState(false);
 
   async function AuthorizeDevice(
     email: string,
@@ -150,7 +152,7 @@ export default function Auth({
                   email: NewUser.Email,
                   password: NewUser.Password,
                   logState: "good",
-                  role:"client"
+                  role: "client",
                 })
               );
             } catch (error) {
@@ -235,7 +237,7 @@ export default function Auth({
                   email: LogUser.Email,
                   password: LogUser.Password,
                   logState: "good",
-                  role:data.data.role
+                  role: data.data.role,
                 })
               );
             } catch (error) {
@@ -430,11 +432,24 @@ export default function Auth({
             />
           </View>
 
-          <Pressable onPress={() => setSeePolicy(true)} style={[CSS.RowView]}>
+          <Pressable
+            onPress={() => setIsForgotPassword(!IsForgotPassword)}
+            style={[CSS.RowView]}
+          >
             <Text style={[CSS.AuthTNCTxt, { textDecorationLine: "underline" }]}>
               Forgotten Password?
             </Text>
           </Pressable>
+          {IsForgotPassword ? (
+            <View>
+              <Text style={[CSS.subText]}>
+                Email the developer for your password:
+              </Text>
+              <Text style={[CSS.Text]} dataDetectorType={"email"}>
+                AppRequestMail@gmail.com
+              </Text>
+            </View>
+          ) : undefined}
           {AuthError === "" ? undefined : (
             <View style={[CSS.AuthErrorBox]}>
               <Text style={[CSS.AuthErrorTxt]}>{AuthError}</Text>
@@ -467,6 +482,26 @@ export default function Auth({
           </Pressable>
         </View>
       )}
+
+      {Platform.OS==="web"? <View style={[CSS.RowViewCenter]}>
+        <View>
+          <Text style={[CSS.Text, { textAlign: "center" }]}>
+            Download Android app:
+          </Text>
+          <Pressable onPress={()=>{Linking.openURL("https://play.google.com/store/apps/details?id=com.kingbadsanta.apprequest")}}>
+          <Image
+            resizeMode="stretch"
+            style={{
+              height: 80,
+              width: 300,
+              backgroundColor: "white",
+              borderRadius: 9,
+            }}
+            source={require("@/assets/images/icons/PlayGetOn.png")}
+            />
+            </Pressable>
+        </View>
+      </View>:undefined}
     </View>
   );
 }

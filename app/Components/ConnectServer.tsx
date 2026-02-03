@@ -22,7 +22,6 @@ export default function Connector() {
     "failed",
   }
 
-  
 
   const [Connection, setConnection] = useState(ConnectType.failed);
   useEffect(() => {

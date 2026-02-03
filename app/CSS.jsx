@@ -352,7 +352,7 @@ const CSS = StyleSheet.create({
     alignSelf: "center",
   },
   MakePayText: { fontSize: 20, fontWeight: "500" },
-  DashText: { fontSize: 17 },
+  DashText: { fontSize: 19,fontWeight:"500" },
   DashActionText: {
     marginTop: 10,
     backgroundColor: "rgb(0, 120, 189)",
@@ -360,7 +360,10 @@ const CSS = StyleSheet.create({
     fontWeight: "500",
     padding: 6,
   },
-  dashActionsBox: { backgroundColor: "rgb(0, 96, 156)" },
+  dashActionsBox: { backgroundColor: "rgb(0, 96, 156)",padding:6 },
+  DashOptText:{borderBottomWidth:1,textAlign:"center",padding:5},
+  subOptText:{fontSize:18,fontWeight:"400"},
+  RequestOptInfoBox:{backgroundColor:"rgba(255, 255, 255, 0.5)",padding:6},
 
   payModal: {
     backgroundColor: "rgba(0, 0, 0, 0.34)",
@@ -445,6 +448,23 @@ const CSS = StyleSheet.create({
   payCancelText: {
     color: "#fff",
     fontSize: 16,
+  },
+  OkayCloseBox: {
+    backgroundColor: "rgb(190, 190, 190)",
+    borderWidth: 1,
+    padding: 5,
+    margin: 5,
+    alignItems: "center",
+  },
+  OkayCloseText: {
+    fontSize: 22,
+    fontWeight: "500",
+    backgroundColor: "rgba(11, 121, 223, 0.66)",
+    padding: 4,
+    borderRadious: 16,
+    width: 150,
+    textAlign: "center",
+    elevation: 4,
   },
 
   /* FAQ */
@@ -776,7 +796,21 @@ const CSS = StyleSheet.create({
 
   ConfirmAccept: { backgroundColor: "silver", padding: 5, margin: 10 },
   InputConfirmAccept: { padding: 5, fontSize: 20 },
-  ConfirmAcceptBtn:{fontSize:25,backgroundColor:"rgb(13, 116, 0)",color:"white",fontWeight:"bold",textAlign:"center",width:500,alignSelf:"center",padding:9,borderRadius:7},
-});
+  ConfirmAcceptBtn: {
+    fontSize: 25,
+    backgroundColor: "rgb(13, 116, 0)",
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+    width: 500,
+    alignSelf: "center",
+    padding: 9,
+    borderRadius: 7,
+  },
+  showGroupBtn:{padding:8,backgroundColor:"rgb(233, 233, 233)",borderWidth:1,borderRadius:8,margin:3},
 
+  /* MODAL OPTIONS CLIENTDASHBOARD */
+
+  OptBox:{fontSize:20,backgroundColor:"rgb(190, 104, 104)",width:200,textAlign:"center",padding:4,fontWeight:"500",borderRadius:20,  elevation:5},
+})
 export default CSS;

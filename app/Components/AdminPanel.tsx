@@ -9,8 +9,10 @@ import {
   Alert,
   ScrollView,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 import Messager from "@/app/Components/Messager";
+import { DeadlineCalculator } from "@/app/Components/ClientDashboard";
 
 import CSS from "@/app/CSS";
 import { ParseMessage } from "./HomePage";
@@ -40,6 +42,7 @@ type RequestType = {
   balance: number;
   upfront: number;
   username: string;
+  _id: string;
 };
 
 export default function AdminDashboard({
@@ -50,8 +53,10 @@ export default function AdminDashboard({
   isReplying,
   ReqState,
   setDevMessage,
+  setRefresh,
   setHideDevtext,
 }: {
+  setRefresh: (x: number) => void;
   User: any;
   hideDevText: boolean;
   setIsReplying: (x: boolean) => void;
@@ -64,9 +69,38 @@ export default function AdminDashboard({
   const [RequestList, setRequestList] = useState([]);
   const [MessageClient, setMessageClient] = useState(false);
 
+  const [Code, setCode] = useState("");
+  const [Deposit, setDeposit] = useState("");
+  const [Note, setNote] = useState("");
+  const [IsSettingPhase, setIsSettingPhase] = useState(false);
+
+  function GetNote(code: string) {
+    switch (code) {
+      case "1":
+        return "Your project is now in early development.";
+      case "3":
+        return "Development in progress.";
+      case "4":
+        return "Development is in final stage.";
+      case "2":
+        return "Development paused, please pay required amount to resume development.";
+      case "5":
+        return "Your project is now ready, please pay remaining balance.";
+      case "10":
+        return "The developer has completed this project.";
+      case "0":
+        return "Development is temporarily paused.";
+      case "99":
+        return "Development is temporarily paused.";
+
+      default:
+        return "";
+    }
+  }
+
   async function RejectRequest() {
     try {
-      setModalVisible(false)
+      setModalVisible(false);
       const res = await fetch(
         "https://apprequestserver.netlify.app/.netlify/functions/admin",
         {
@@ -77,52 +111,48 @@ export default function AdminDashboard({
             email: User.email,
             password: User.password,
             from: selectedRequest?.from,
-            note:RejectNote,
-            newFee:FinalFee
+            note: RejectNote,
           }),
         }
       );
-      UpdatePanel()
+      console.log(await res.json());
+      UpdatePanel();
     } catch (error) {}
   }
 
   async function UpdatePanel() {
-      try {
-        const res = await fetch(
-          "https://apprequestserver.netlify.app/.netlify/functions/admin",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              task: "requeststage",
-              email: User.email,
-              password: User.password,
-            }),
-          }
-        );
-
-        if (res.status === 200) {
-          const data = await res.json();
-          if (data.state === "good") {
-            console.log("Admin Good");
-            setRequestList(data.requestList);
-            
-          }
+    try {
+      const res = await fetch(
+        "https://apprequestserver.netlify.app/.netlify/functions/admin",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            task: "getRequests",
+            email: User.email,
+            password: User.password,
+          }),
         }
-      } catch (error) {
-        console.error(error);
-      }
-    }
+      );
 
+      if (res.status === 200) {
+        const data = await res.json();
+        if (data.state === "good") {
+          setRequestList(data.requestList);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   useEffect(() => {
     UpdatePanel();
-    
   }, []);
 
   async function AcceptRequest() {
     try {
-      setModalVisible(false)
+      setModalVisible(false);
       const res = await fetch(
         "https://apprequestserver.netlify.app/.netlify/functions/admin",
         {
@@ -133,33 +163,172 @@ export default function AdminDashboard({
             email: User.email,
             password: User.password,
             from: selectedRequest?.from,
-            upfront:Upfront,
-            note:AcceptNote
+            upfront: Upfront,
+            note: AcceptNote,
+            newFee: FinalFee === undefined ? selectedRequest?.fee : FinalFee,
           }),
         }
       );
-      UpdatePanel()
+      console.log(await res.json());
+      UpdatePanel();
     } catch (error) {}
   }
-  
+
   const [selectedRequest, setSelectedRequest] = useState<RequestType>();
   const [modalVisible, setModalVisible] = useState(false);
-  const [ConfirmAccept,setConfirmAccept]=useState(false)
-  const [FinalFee,setFinalFee]=useState(selectedRequest?.fee)
-  const [Upfront,setUpfront]=useState(0)
-  const [ConfirmReject,setConfirmReject]=useState(false)
-  const [AcceptNote,setAcceptNote]=useState("Project approved, please pay the required upfront.")
-  const [RejectNote,setRejectNote]=useState("Request rejected.")
+  const [ConfirmAccept, setConfirmAccept] = useState(false);
+  const [FinalFee, setFinalFee] = useState(selectedRequest?.fee);
+  const [Upfront, setUpfront] = useState(0);
+  const [ConfirmReject, setConfirmReject] = useState(false);
+  const [AcceptNote, setAcceptNote] = useState(
+    "Project approved, please pay the required upfront."
+  );
+  const [RejectNote, setRejectNote] = useState("Request rejected.");
+  const [IsSettingStage, setIsSettingStage] = useState(false);
 
+  const [onEdit, setOnEdit] = useState(false);
+  const [updateFee, setUpdateFee] = useState("");
+  const [updateBalance, setUpdateBalance] = useState("");
+  const [updatePhaseDeposit, setUpdatePhaseDeposit] = useState("");
+  const [updateDeadline, setUpdateDeadline] = useState("");
+
+  const [IsUpdatingFee, setIsUpdatingFee] = useState(false);
+  const [IsUpdatingBalance, setIsUpdatingBalance] = useState(false);
+  const [IsUpdatingPhaseDeposit, setIsUpdatingPhaseDeposit] = useState(false);
+  const [IsUpdatingDeadline, setIsUpdatingDeadline] = useState(false);
+  const [ShowActive,setShowActive]=useState(false)
+  const [ShowReview,setShowReview]=useState(false)
+
+  async function GoUpdateFee() {
+    try {
+      setIsUpdatingFee(true);
+      const res = await fetch(
+        "https://apprequestserver.netlify.app/.netlify/functions/admin",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            task: "updateFee",
+            email: User.email,
+            password: User.password,
+            from: selectedRequest?.from,
+            newFee: updateFee,
+          }),
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsUpdatingFee(false);
+    }
+  }
+  async function GoUpdateBalance() {
+    try {
+      setIsUpdatingBalance(true);
+      const res = await fetch(
+        "https://apprequestserver.netlify.app/.netlify/functions/admin",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            task: "updateBalance",
+            email: User.email,
+            password: User.password,
+            from: selectedRequest?.from,
+            newBalance: updateBalance,
+          }),
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsUpdatingBalance(false);
+    }
+  }
+
+  async function GoSetPhase() {
+    setIsSettingPhase(true);
+    try {
+      const res = await fetch(
+        "https://apprequestserver.netlify.app/.netlify/functions/admin",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            task: "setPhase",
+            code: Code,
+            note: Note === "" ? GetNote(Code) : Note,
+            deposit: Deposit,
+            email: User.email,
+            password: User.password,
+            from: selectedRequest?.from,
+          }),
+        }
+      );
+      console.log("$$$$$");
+      console.log(await res.json());
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSettingPhase(false);
+    }
+  }
+
+  async function GoUpdatePhaseDeposit() {
+    try {
+      setIsUpdatingPhaseDeposit(true);
+      const res = await fetch(
+        "https://apprequestserver.netlify.app/.netlify/functions/admin",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            task: "updatePhaseDeposit",
+            email: User.email,
+            password: User.password,
+            from: selectedRequest?.from,
+            newPhaseDeposit: updatePhaseDeposit,
+          }),
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsUpdatingPhaseDeposit(false);
+    }
+  }
+  async function GoUpdateDeadline() {
+    try {
+      setIsUpdatingDeadline(true);
+      const res = await fetch(
+        "https://apprequestserver.netlify.app/.netlify/functions/admin",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            task: "updateDeadline",
+            email: User.email,
+            password: User.password,
+            from: selectedRequest?.from,
+            newDeadline: updateDeadline,
+          }),
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsUpdatingDeadline(false);
+    }
+  }
 
   /* ---------------- FUNCTIONS ---------------- */
 
   function openModal(item: RequestType) {
-    setConfirmAccept(false)
-    setConfirmReject(false)
-    if (selectedRequest?.message !== undefined) {
-      console.log(selectedRequest.message);
-      setDevMessage(ParseMessage(selectedRequest.message, User));
+    setConfirmAccept(false);
+    setConfirmReject(false);
+
+    if (item?.message !== undefined) {
+      setDevMessage(ParseMessage(item.message, User));
     }
     setSelectedRequest(item);
     setModalVisible(true);
@@ -169,13 +338,21 @@ export default function AdminDashboard({
     setModalVisible(false);
     setSelectedRequest(undefined);
   }
-  function GetFeeUpfront(fee:number | undefined){
-    if(fee===undefined){return undefined}
-    else{
-      return (fee*0.20).toString()
+  function GetFeeUpfront(fee: number | undefined) {
+    if (fee === undefined) {
+      return undefined;
+    } else {
+      return (fee * 0.2).toString();
     }
   }
 
+
+  function GiveActiveRequest(list:RequestType[]){
+    return list.filter(x=>x.stage !== "review" && x.stage !== "completed" && x.stage !== "rejected")
+  } 
+   function GiveReviewRequest(list:RequestType[]){
+    return list.filter(x=>x.stage === "review")
+  } 
 
   /* ---------------- LIST ITEM ---------------- */
 
@@ -184,13 +361,15 @@ export default function AdminDashboard({
       <Pressable style={CSS.dashlistItem} onPress={() => openModal(item)}>
         <Text style={CSS.dashappName}>{item.appName}</Text>
 
-        <Text style={CSS.dashsmallText}>{item.category}</Text>
+        <Text style={CSS.dashsmallText}>{item.projectType.toUpperCase()}</Text>
 
         <Text style={CSS.dashsmallText}>Budget: {item.budget}</Text>
 
         <Text style={CSS.dashsmallText}>Fee: {item.fee}</Text>
 
-        <Text style={CSS.dashsmallText}>Deadline: {item.deadline}</Text>
+        <Text style={CSS.dashsmallText}>
+          Deadline: {DeadlineCalculator(item.timer.toString(), item.deadline)}
+        </Text>
 
         <Text style={[CSS.dashstage]}>{item.stage}</Text>
       </Pressable>
@@ -208,16 +387,33 @@ export default function AdminDashboard({
         Total Requests: {RequestList.length}
       </Text>
 
-      <Text style={CSS.AdminDashText}>Users: 25</Text>
+      {/* <Text style={CSS.AdminDashText}>Users: 25</Text> */}
 
       {/* List */}
-      <FlatList
-      inverted
-        data={RequestList}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        contentContainerStyle={{ paddingBottom: 40 }}
-      />
+      <View>
+        <Pressable onPress={()=>{setShowActive(!ShowActive)}}>
+        <Text style={[CSS.UATittle,CSS.showGroupBtn]}>ACTIVE REQUESTS</Text>
+        </Pressable>
+        {ShowActive? <FlatList
+          inverted
+          data={GiveActiveRequest(RequestList)}
+          keyExtractor={(item) => item._id}
+          renderItem={renderItem}
+          contentContainerStyle={{ paddingBottom: 40 }}
+        />:undefined}
+      </View>
+      <View>
+        <Pressable onPress={()=>{setShowReview(!ShowReview)}}>
+        <Text style={[CSS.UATittle,CSS.showGroupBtn]}>REVIEW REQUESTS</Text>
+        </Pressable>
+        {ShowReview? <FlatList
+          inverted
+          data={GiveReviewRequest(RequestList)}
+          keyExtractor={(item) => item._id}
+          renderItem={renderItem}
+          contentContainerStyle={{ paddingBottom: 40 }}
+        />:undefined}
+      </View>
 
       {/* Modal */}
       <Modal visible={modalVisible} animationType="slide" transparent>
@@ -230,48 +426,176 @@ export default function AdminDashboard({
               {/* Top Buttons */}
 
               {/* Action Buttons */}
-              {ConfirmAccept || ConfirmReject? undefined:<View style={CSS.dashactionRow}>
-                <Pressable
-                  style={CSS.dashacceptBtn}
-                  onPress={()=>setConfirmAccept(true)}
-                >
-                  <Text style={CSS.dashbtnText}>Accept</Text>
-                </Pressable>
+              {ConfirmAccept ||
+              ConfirmReject ||
+              selectedRequest?.stage !== "review" ? undefined : (
+                <View style={CSS.dashactionRow}>
+                  <Pressable
+                    style={CSS.dashacceptBtn}
+                    onPress={() => setConfirmAccept(true)}
+                  >
+                    <Text style={CSS.dashbtnText}>Accept</Text>
+                  </Pressable>
 
-                <Pressable style={CSS.dashrejectBtn} onPress={()=>setConfirmReject(true)}>
-                  <Text style={CSS.dashbtnText}>Reject</Text>
-                </Pressable>
+                  <Pressable
+                    style={CSS.dashrejectBtn}
+                    onPress={() => setConfirmReject(true)}
+                  >
+                    <Text style={CSS.dashbtnText}>Reject</Text>
+                  </Pressable>
+                </View>
+              )}
 
-               
-              </View>}
-
-             
-
-               {ConfirmAccept? <View style={[CSS.ConfirmAccept]}>
-                  <View >
+              {ConfirmAccept ? (
+                <View style={[CSS.ConfirmAccept]}>
+                  <View>
                     <Text style={[CSS.Text]}>UPFRONT:</Text>
-                    <TextInput defaultValue={GetFeeUpfront(selectedRequest?.fee)} onChangeText={(txt)=>setUpfront(parseFloat(txt))} style={[CSS.replyInput,CSS.InputConfirmAccept]} placeholder="Upfront Amount" placeholderTextColor={"silver"} />
+                    <TextInput
+                      defaultValue={GetFeeUpfront(selectedRequest?.fee)}
+                      onChangeText={(txt) => setUpfront(parseFloat(txt))}
+                      style={[CSS.replyInput, CSS.InputConfirmAccept]}
+                      placeholder="Upfront Amount"
+                      placeholderTextColor={"silver"}
+                    />
                   </View>
                   <View>
                     <Text style={[CSS.Text]}>STAGE NOTICE:</Text>
-                    <TextInput onChangeText={(txt)=>setAcceptNote(txt)} style={[CSS.replyInput,CSS.InputConfirmAccept]} defaultValue={AcceptNote} placeholder="Review Note" placeholderTextColor={"silver"} />
+                    <TextInput
+                      onChangeText={(txt) => setAcceptNote(txt)}
+                      style={[CSS.replyInput, CSS.InputConfirmAccept]}
+                      defaultValue={AcceptNote}
+                      placeholder="Review Note"
+                      placeholderTextColor={"silver"}
+                    />
                   </View>
                   <View>
                     <Text style={[CSS.Text]}>FINAL FEE:</Text>
-                    <TextInput defaultValue={selectedRequest?.fee.toString()} onChangeText={(txt)=>setFinalFee(parseFloat(txt))} style={[CSS.replyInput,CSS.InputConfirmAccept]}  placeholder="Final fee" placeholderTextColor={"silver"} />
+                    <TextInput
+                      defaultValue={selectedRequest?.fee.toString()}
+                      onChangeText={(txt) => setFinalFee(parseFloat(txt))}
+                      style={[CSS.replyInput, CSS.InputConfirmAccept]}
+                      placeholder="Final fee"
+                      placeholderTextColor={"silver"}
+                    />
                   </View>
-                  <Pressable onPress={() => AcceptRequest()}><Text style={[CSS.ConfirmAcceptBtn]}>CONFIRM ACCEPT</Text></Pressable>
-                </View>:undefined}
+                  <Pressable onPress={() => AcceptRequest()}>
+                    <Text style={[CSS.ConfirmAcceptBtn]}>CONFIRM ACCEPT</Text>
+                  </Pressable>
+                </View>
+              ) : undefined}
 
-                
-               {ConfirmReject? <View style={[CSS.ConfirmAccept]}>
-                  <View >
-                    <Text style={[CSS.Text]}>REJECT REASON:</Text>
-                    <TextInput onChangeText={(txt)=>setRejectNote(txt)} defaultValue={RejectNote} style={[CSS.replyInput,CSS.InputConfirmAccept]} placeholder="Reject reason" placeholderTextColor={"silver"} />
+              {selectedRequest?.stage !== "review" &&
+              selectedRequest?.stage !== "rejected" &&
+              selectedRequest?.stage !== "completed" ? (
+                <View style={[{ backgroundColor: "rgb(211, 211, 211)" }]}>
+                  <Text style={[CSS.AuthTittle]}>SET STAGE</Text>
+                  <Text style={[CSS.Text, { textAlign: "right" }]}>
+                    Now on: {selectedRequest?.stage.toUpperCase()}
+                  </Text>
+                  <View>
+                    <View style={[CSS.ContentBox]}>
+                      <Text style={[CSS.Text]}>SET PHASE CODE:</Text>
+                      <Text style={[CSS.Text]}>0. HOLD</Text>
+                      <Text style={[CSS.Text]}>1. Phase 1</Text>
+                      <Text style={[CSS.Text]}>2. Phase 2 Payment</Text>
+                      <Text style={[CSS.Text]}>3. Phase 2 Start</Text>
+                      <Text style={[CSS.Text]}>4. Phase 3 Start</Text>
+                      <Text style={[CSS.Text]}>5. Final Payment</Text>
+                      <Text style={[CSS.Text]}>10. COMPLETE</Text>
+                      <Text style={[CSS.Text]}>99. REJECT</Text>
+
+                      <Text style={[CSS.TnCActTxt, { marginTop: 15 }]}>
+                        CODE:
+                      </Text>
+                      <TextInput
+                        onChangeText={(txt) => setCode(txt)}
+                        style={[
+                          CSS.replyInput,
+                          CSS.InputConfirmAccept,
+                          { margin: 0, width: 150, borderWidth: 1 },
+                        ]}
+                        placeholder="Enter Code"
+                        placeholderTextColor={"silver"}
+                      />
+                      <Text style={[CSS.TnCActTxt]}>Note:</Text>
+                      <TextInput
+                        defaultValue={Note}
+                        onChangeText={(txt) => setNote(txt)}
+                        style={[
+                          CSS.replyInput,
+                          CSS.InputConfirmAccept,
+                          { margin: 0 },
+                        ]}
+                        placeholder="Phase Note"
+                        placeholderTextColor={"silver"}
+                      />
+                      {Code === "2" || Code === "5" ? (
+                        <View>
+                          <Text style={[CSS.TnCActTxt]}>Deposit Amount:</Text>
+                          <TextInput
+                            defaultValue={Deposit}
+                            onChangeText={(txt) => setDeposit(txt)}
+                            style={[
+                              CSS.replyInput,
+                              CSS.InputConfirmAccept,
+                              { margin: 0 },
+                            ]}
+                            placeholder="Deposit Amount"
+                            placeholderTextColor={"silver"}
+                          />
+                        </View>
+                      ) : undefined}
+
+                      {IsSettingPhase ? (
+                        <ActivityIndicator size={"large"} color={"blue"} />
+                      ) : (
+                        <Pressable
+                          style={[{ margin: 10 }]}
+                          onPress={GoSetPhase}
+                        >
+                          <Text
+                            style={[
+                              CSS.OptBox,
+                              {
+                                backgroundColor: "rgb(10, 119, 0)",
+                                color: "white",
+                              },
+                            ]}
+                          >
+                            UPDDATE
+                          </Text>
+                        </Pressable>
+                      )}
+                    </View>
                   </View>
-                  
-                  <Pressable onPress={() => RejectRequest()}><Text style={[CSS.ConfirmAcceptBtn,{backgroundColor:"rgb(172, 0, 0)"}]}>CONFIRM REJECT</Text></Pressable>
-                </View>:undefined}
+                </View>
+              ) : undefined}
+
+              {ConfirmReject ? (
+                <View style={[CSS.ConfirmAccept]}>
+                  <View>
+                    <Text style={[CSS.Text]}>REJECT REASON:</Text>
+                    <TextInput
+                      onChangeText={(txt) => setRejectNote(txt)}
+                      defaultValue={RejectNote}
+                      style={[CSS.replyInput, CSS.InputConfirmAccept]}
+                      placeholder="Reject reason"
+                      placeholderTextColor={"silver"}
+                    />
+                  </View>
+
+                  <Pressable onPress={() => RejectRequest()}>
+                    <Text
+                      style={[
+                        CSS.ConfirmAcceptBtn,
+                        { backgroundColor: "rgb(172, 0, 0)" },
+                      ]}
+                    >
+                      CONFIRM REJECT
+                    </Text>
+                  </Pressable>
+                </View>
+              ) : undefined}
 
               {/* Details */}
               {selectedRequest && (
@@ -296,13 +620,22 @@ export default function AdminDashboard({
                   <Text style={CSS.dashmodalValue}>
                     {selectedRequest.budget}
                   </Text>
+                  <View style={[CSS.RowView]}>
+                    <Text style={CSS.dashmodalText}>Upfront:</Text>
+                    <Text style={CSS.dashmodalValue}>
+                      {selectedRequest.upfront}
+                    </Text>
+                  </View>
 
                   <Text style={CSS.dashmodalText}>Fee:</Text>
                   <Text style={CSS.dashmodalValue}>{selectedRequest.fee}</Text>
 
                   <Text style={CSS.dashmodalText}>Deadline:</Text>
                   <Text style={CSS.dashmodalValue}>
-                    {selectedRequest.deadline}
+                    {DeadlineCalculator(
+                      selectedRequest.timer.toString(),
+                      selectedRequest.deadline
+                    )}
                   </Text>
 
                   <Text style={CSS.dashmodalText}>stage:</Text>
@@ -313,7 +646,10 @@ export default function AdminDashboard({
               )}
 
               <View style={CSS.dashactionRow}>
-                <Pressable style={CSS.dasheditBtn}>
+                <Pressable
+                  onPress={() => setOnEdit(true)}
+                  style={CSS.dasheditBtn}
+                >
                   <Text style={CSS.dashbtnText}>Edit</Text>
                 </Pressable>
 
@@ -324,8 +660,95 @@ export default function AdminDashboard({
                   <Text style={CSS.dashbtnText}>Message</Text>
                 </Pressable>
               </View>
+              {onEdit ? (
+                <View>
+                  <Text style={[CSS.QzTittle]}>EDDITING REQUEST</Text>
+                  <View>
+                    <Text style={[CSS.Text]}>SET TOTAL FEE:</Text>
+                    <TextInput
+                      defaultValue={selectedRequest?.fee.toString()}
+                      onChangeText={(txt) => setUpdateFee(txt)}
+                      style={[CSS.replyInput, CSS.InputConfirmAccept]}
+                      placeholder="Total Fee"
+                      placeholderTextColor={"silver"}
+                    />
+                    {IsUpdatingFee ? (
+                      <ActivityIndicator color={"blue"} />
+                    ) : (
+                      <Pressable onPress={GoUpdateFee}>
+                        <Text style={[CSS.Text]}>UPDATE FEE</Text>
+                      </Pressable>
+                    )}
+                  </View>
+
+                  <View>
+                    <Text style={[CSS.Text]}>SET BALANCE:</Text>
+                    <TextInput
+                      defaultValue={selectedRequest?.balance.toString()}
+                      onChangeText={(txt) => setUpdateBalance(txt)}
+                      style={[CSS.replyInput, CSS.InputConfirmAccept]}
+                      placeholder="Remaining balance"
+                      placeholderTextColor={"silver"}
+                    />
+                    {IsUpdatingBalance ? (
+                      <ActivityIndicator color={"blue"} />
+                    ) : (
+                      <Pressable onPress={GoUpdateBalance}>
+                        <Text style={[CSS.Text]}>UPDATE BALANCE</Text>
+                      </Pressable>
+                    )}
+                  </View>
+                  <View>
+                    <Text style={[CSS.Text]}>SET DEADLINE:</Text>
+                    <Text style={[CSS.Text]}>
+                      Adding: +{updateDeadline} Days
+                    </Text>
+                    <View>
+                      <Pressable onPress={() => setUpdateDeadline("1")}>
+                        <Text style={[CSS.Text]}>+1 Days</Text>
+                      </Pressable>
+                      <Pressable onPress={() => setUpdateDeadline("2")}>
+                        <Text style={[CSS.Text]}>+2 Days</Text>
+                      </Pressable>
+                      <Pressable onPress={() => setUpdateDeadline("5")}>
+                        <Text style={[CSS.Text]}>+5 Days</Text>
+                      </Pressable>
+                      <Pressable onPress={() => setUpdateDeadline("7")}>
+                        <Text style={[CSS.Text]}>+7 Days</Text>
+                      </Pressable>
+                    </View>
+                    {IsUpdatingDeadline ? (
+                      <ActivityIndicator color={"blue"} />
+                    ) : (
+                      <Pressable onPress={GoUpdateDeadline}>
+                        <Text style={[CSS.Text]}>UPDATE DEADLINE</Text>
+                      </Pressable>
+                    )}
+                  </View>
+
+                  <View>
+                    <Text style={[CSS.Text]}>SET PHASE DEPOSIT:</Text>
+                    <TextInput
+                      defaultValue={selectedRequest?.upfront.toString()}
+                      onChangeText={(txt) => setUpdatePhaseDeposit(txt)}
+                      style={[CSS.replyInput, CSS.InputConfirmAccept]}
+                      placeholder="Phase deposit"
+                      placeholderTextColor={"silver"}
+                    />
+                    {IsUpdatingPhaseDeposit ? (
+                      <ActivityIndicator color={"blue"} />
+                    ) : (
+                      <Pressable onPress={GoUpdatePhaseDeposit}>
+                        <Text style={[CSS.Text]}>UPDATE DEPOSIT</Text>
+                      </Pressable>
+                    )}
+                  </View>
+                </View>
+              ) : undefined}
               {selectedRequest?.message !== "" || MessageClient ? (
                 <Messager
+                  setRefresh={setRefresh}
+                  clientEmail={selectedRequest?.from}
                   User={User}
                   hideDevText={hideDevText}
                   setIsReplying={setIsReplying}
@@ -349,245 +772,4 @@ export default function AdminDashboard({
   );
 }
 
-const DummyData = [
-  {
-    from: "kingbuff@mail",
-    timer: 1769766085946,
-    message: "",
-    id: "Req744.tbrdjyjyjdyj@mail",
-    stage: "review",
-    reason: "Your request is under review",
-    date: "2026-001-30/9:41:25",
-    deadline: "3",
-    budget: "59",
-    fee: 90,
-    features: "--Server-Database-Email System--Authontication-",
-    appName: "Rondo Beach Club",
-    projectType: "website",
-    description: "FGSHSRTBH R J RYJ DRYJXFY YF JXFYUJXF F",
-    category: "Business",
-    contactEmail: "alostroboy@mail",
-    contactWhatsApp: "0943624",
-    contactOtherName: "",
-    contactOtherLink: "",
-    balance: 0,
-    upfront: 0,
-  },
-
-  {
-    from: "alostroboy@mail",
-    timer: 1769766085946,
-    message: "",
-    id: "Req744.itdgkfgkdufj@mail",
-    stage: "review",
-    reason: "Your request is under review",
-    date: "2026-001-30/9:41:25",
-    deadline: "7",
-    budget: "R4788",
-    fee: 55,
-    features: "-------",
-    appName: "Sassling Snails",
-    projectType: "native",
-    description: "FGSHSRTBH R J RYJ DRYJXFY YF JXFYUJXF F",
-    category: "Blog",
-    contactEmail: "alostroboy@mail",
-    contactWhatsApp: "",
-    contactOtherName: "",
-    contactOtherLink: "",
-    balance: 0,
-    upfront: 11,
-  },
-
-  {
-    from: "alostroboy@mail",
-    timer: 1769766085946,
-    message: "",
-    id: "Req744.fdtikfgkjj@mail",
-    stage: "review",
-    reason: "Your request is under review",
-    date: "2026-001-30/9:41:25",
-    deadline: "7",
-    budget: "R4788",
-    fee: 55,
-    features: "----maintanance---",
-    appName: "Beasty",
-    projectType: "native",
-    description: "FGSHSRTBH R J RYJ DRYJXFY YF JXFYUJXF F",
-    category: "other",
-    contactEmail: "alostroboy@mail",
-    contactWhatsApp: "",
-    contactOtherName: "",
-    contactOtherLink: "",
-    balance: 0,
-    upfront: 11,
-  },
-
-  {
-    from: "alostroboy@mail",
-    timer: 1769766085946,
-    message: "",
-    id: "Req744.duydxudi@mail",
-    stage: "review",
-    reason: "Your request is under review",
-    date: "2026-001-30/9:41:25",
-    deadline: "7",
-    budget: "R4788",
-    fee: 24,
-    features: "--Server--Email System---",
-    appName: "Takila Bushes",
-    projectType: "app",
-    description: "FGSHSRTBH R J RYJ DRYJXFY YF JXFYUJXF F",
-    category: "Business",
-    contactEmail: "alostroboy@mail",
-    contactWhatsApp: "",
-    contactOtherName: "",
-    contactOtherLink: "",
-    balance: 0,
-    upfront: 11,
-  },
-
-  {
-    from: "alostroboy@mail",
-    timer: 1769766085946,
-    message: "",
-    id: "Req744.dyfjduu@mail",
-    stage: "review",
-    reason: "Your request is under review",
-    date: "2026-001-30/9:41:25",
-    deadline: "60",
-    budget: "R4788",
-    fee: 55,
-    features: "--Server--Email System---",
-    appName: "JAZZ",
-    projectType: "app",
-    description: "FGSHSRTBH R J RYJ DRYJXFY YF JXFYUJXF F",
-    category: "Business",
-    contactEmail: "alostroboy@mail",
-    contactWhatsApp: "",
-    contactOtherName: "",
-    contactOtherLink: "",
-    balance: 0,
-    upfront: 11,
-  },
-
-  {
-    from: "alostroboy@mail",
-    timer: 1769766085946,
-    message: "",
-    id: "Req744.dsyjdj@mail",
-    stage: "review",
-    reason: "Your request is under review",
-    date: "2026-001-30/9:41:25",
-    deadline: "7",
-    budget: "R4788",
-    fee: 55,
-    features: "--Server--Email System---",
-    appName: "JAZZ",
-    projectType: "app",
-    description: "FGSHSRTBH R J RYJ DRYJXFY YF JXFYUJXF F",
-    category: "Business",
-    contactEmail: "alostroboy@mail",
-    contactWhatsApp: "",
-    contactOtherName: "",
-    contactOtherLink: "",
-    balance: 0,
-    upfront: 11,
-  },
-
-  {
-    from: "alostroboy@mail",
-    timer: 1769766085946,
-    message: "",
-    id: "Req744.udjyjxstg@mail",
-    stage: "review",
-    reason: "Your request is under review",
-    date: "2026-001-30/9:41:25",
-    deadline: "7",
-    budget: "R4788",
-    fee: 55,
-    features: "--Server--Email System---",
-    appName: "JAZZ",
-    projectType: "app",
-    description: "FGSHSRTBH R J RYJ DRYJXFY YF JXFYUJXF F",
-    category: "Business",
-    contactEmail: "alostroboy@mail",
-    contactWhatsApp: "",
-    contactOtherName: "",
-    contactOtherLink: "",
-    balance: 0,
-    upfront: 11,
-  },
-
-  {
-    from: "alostroboy@mail",
-    timer: 1769766085946,
-    message: "",
-    id: "Req744.dymndjd@mail",
-    stage: "review",
-    reason: "Your request is under review",
-    date: "2026-001-30/9:41:25",
-    deadline: "7",
-    budget: "R4788",
-    fee: 55,
-    features: "--Server--Email System---",
-    appName: "JAZZ",
-    projectType: "app",
-    description: "FGSHSRTBH R J RYJ DRYJXFY YF JXFYUJXF F",
-    category: "Business",
-    contactEmail: "alostroboy@mail",
-    contactWhatsApp: "",
-    contactOtherName: "",
-    contactOtherLink: "",
-    balance: 0,
-    upfront: 11,
-  },
-
-  {
-    from: "alostroboy@mail",
-    timer: 1769766085946,
-    message: "",
-    id: "Req744.tshsthsth@mail",
-    stage: "review",
-    reason: "Your request is under review",
-    date: "2026-001-30/9:41:25",
-    deadline: "7",
-    budget: "R4788",
-    fee: 55,
-    features: "--Server--Email System---",
-    appName: "JAZZ",
-    projectType: "app",
-    description: "FGSHSRTBH R J RYJ DRYJXFY YF JXFYUJXF F",
-    category: "Business",
-    contactEmail: "alostroboy@mail",
-    contactWhatsApp: "",
-    contactOtherName: "",
-    contactOtherLink: "",
-    balance: 0,
-    upfront: 11,
-  },
-
-  {
-    from: "zakhe@gmail.com",
-    timer: 1769734815968,
-    message:
-      "Client: ++^++ Tester  ++^++ 30/1/2026  10:30==^==Client: ++^++ 555 ++^++ 30/001/2026  09:24==^==Client: ++^++ HP ++^++ 30/001/2026  09:22==^==Client: ++^++ I'm ok thanks for the rain to me and I can't wait to see you all I think of you and your family and your  ++^++ 30/1/2026  9:7==^==Client: ++^++ Meat ++^++ 30/1/2026  9:6==^==Client: ++^++ Guy ++^++ 30/1/2026  9:6==^==Client: ++^++ Zee ++^++ 30/1/2026  8:58==^==Client: ++^++ XD hurry  ++^++ 30/1/2026  8:58==^==Client: ++^++ Bad Boy ++^++ 30/1/2026  7:35==^==Client: ++^++ Zakes ++^++ 30/1/2026  7:35==^==Client: ++^++ Ghjgchh\nHhhjjo\nBhjk\nGhjklo\nGuiol\nGhuio\nHjio\nHhjjj\nHhjjkkk\nHhjjk\nHhjjk\nHhjjkl\nHhj ++^++ 30/1/2026  7:17==^==Client: ++^++ Ok ++^++ 30/1/2026  7:14==^==",
-    id: "Req695.dthsdthshts@gmail.com",
-    stage: "review",
-    reason: "Your request is under review",
-    date: "2026-1-30/1:0:15",
-    deadline: "14",
-    budget: "509",
-    fee: 59,
-    features: "Auth--Server-Database--Deploy--",
-    appName: "GwenTalks",
-    projectType: "app",
-    description: "Gjjdrghju\n",
-    category: "Other",
-    contactEmail: "zakhe@gmail.com",
-    contactWhatsApp: "",
-    contactOtherName: "",
-    contactOtherLink: "",
-    balance: 0,
-    upfront: 53,
-  },
-];
+//deposit amount deadline:

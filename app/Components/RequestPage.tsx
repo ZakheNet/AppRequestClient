@@ -51,6 +51,9 @@ export default function Request({
   setOnStep: (x: number) => void;
   setActivity: (x: ActivityType) => void;
 }) {
+
+useEffect(()=>{setOnStep(0)},[])
+
   const [canNext, setCanNext] = useState(false);
   const [QzContacts, setQzContacts] = useState({
     email: User.email,
@@ -1076,7 +1079,7 @@ export default function Request({
                 setQzContacts({ ...QzContacts, otherName: text });
               }}
               placeholderTextColor={"silver"}
-              placeholder={"eg: Telegram"}
+              placeholder={"eg: Outlook/Telegram"}
               maxLength={20}
               style={[CSS.AuthInputTxt, { marginBottom: 10 }]}
             />

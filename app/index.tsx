@@ -28,7 +28,8 @@ import About from "@/app/Components/About";
 
 export type TypeState = "checking" | "offline" | "requested" | "none";
 export const DEV = false;
-export const DB = "Test22 ";
+export const DB = "DB";
+
 export enum ActivityType {
   "Home",
   "FAQ",
@@ -57,6 +58,17 @@ export const initData = {
 };
 
 console.log("KIN");
+
+
+
+
+
+
+
+//role
+
+
+
 
 export const Steps = [
   "Type",
@@ -99,7 +111,7 @@ export default function App() {
             username: res.username,
             role: res.role,
           });
-          console.log(res);
+          console.log(res.role  );
           if (res.role === "admin") {
             setActivity(ActivityType.AdminPanel);
           }
@@ -119,6 +131,8 @@ export default function App() {
   const [menuModal, setModalMenu] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
   const [Rates, setRates] = useState(initialRates);
+  const [Refresh,setRefresh]=useState(0)
+
 
   useEffect(() => {
     try {
@@ -167,6 +181,7 @@ export default function App() {
   }
 
   function Header({ User }: { User: any }) {
+
     return (
       <View style={[CSS.Header]}>
         <Pressable style={[CSS.RowView]} onPress={OpenDrawer}>
@@ -184,9 +199,10 @@ export default function App() {
     );
   }
 
+
   return (
     <Container style={CSS.Container}>
-      <ImageBackground
+      {/* <ImageBackground
         style={[
           {
             overflow: "hidden",
@@ -194,10 +210,11 @@ export default function App() {
             width: Dimensions.get("window").width,
           },
         ]}
+        tintColor={"rgba(223, 223, 223, 0.3)"}
         resizeMode="repeat"
-        blurRadius={11}
+        blurRadius={1}
         source={require("@/assets/images/BG2.jpg")}
-      >
+      > */}
         <DrawerMenu
           ref={drawerRef}
           drawerBackgroundColor={"rgba(182,52,52,0.95)"}
@@ -248,6 +265,8 @@ export default function App() {
                 />
               ) : Activity === ActivityType.Home ? (
                 <Home
+                Refresh={Refresh}
+                setRefresh={setRefresh}
                   isReplying={isReplying}
                   setIsReplying={setIsReplying}
                   setReqState={setReqState}
@@ -285,6 +304,7 @@ export default function App() {
                 <RatesPage Rates={Rates} setActivity={setActivity} />
               ) : Activity === ActivityType.AdminPanel ? (
                 <AdminPanel
+                setRefresh={setRefresh}
                   setIsReplying={setIsReplying}
                   isReplying={isReplying}
                   setHideDevtext={setHideDevtext}
@@ -300,64 +320,7 @@ export default function App() {
             </View>
           </ScrollView>
         </DrawerMenu>
-      </ImageBackground>
+      {/* </ImageBackground> */}
     </Container>
   );
 }
-/* 
-<View style={[CSS.UserAgreementContainer]}>
-  <View style={[CSS.topic]}>
-    <Text style={[CSS.UserAgreementTittle]}>REFUNDS</Text>
-    <Text style={[CSS.subText]}>
-      ...Some user agreement details about refunds here
-    </Text>
-  </View>
-
-  <View style={[CSS.topic]}>
-    <Text style={[CSS.UserAgreementTittle]}>Payments</Text>
-    <Text style={[CSS.subText]}>
-      ...Some user agreement details about refunds here
-    </Text>
-  </View>
-
-  <View style={[CSS.topic]}>
-    <Text style={[CSS.UserAgreementTittle]}>Privacy</Text>
-    <Text style={[CSS.subText]}>
-      ...Some user agreement details about refunds here
-    </Text>
-  </View>
-</View>
-
-following this structure and FormData, generate a user agreement or terms and conditions for my "App Request" application, the app allow users to signup with their username email and password to create an account then they can request an app by spcifying the details category and features of their App, the users depending on the type of project will have to first wait for the app developer to approve or reject their request after submmiting, if their project is approved they need to make a 20% upfront deposit which is fully refundable in the first phase of the project, when the project reaches phase2 a  30% deposit is required and in the final phase3 when the project is completed the remaining 50% is then preventAutoHideAsync, payments are made through gateways such as paypay or which ever payment method work for both the client and developer, communication between the developer is made through external platforms such as via email, whatsapp or other method spicified by the client, the client via the app will frequently recieve updates and progress reports via the App, the client is allowed to cancel the project and with a full refund only in the first phase of the PromiseRejectionEvent, should the client cancel in the 2nd phase of the project a fee of 15% is deducted from the full refund, and canceling in the last phase a 40% is deducted, the client is allowed to request a handful of changes to the project without any fees, write a well descriptive user agreement and add important things as WEBGL_lose_context, make it look clean and professional
-
-
-1TB SSD
-12TB HDD (4,4,4)
-12GB GPU
-i7 9/10th Gen
-32GB DDR4
-42 1080p + 42 720p + 52inc
-
-9
-10
-11
-12 
----1 Break
-2
-3
-4
----5 Break
-6
-7
-8 
-
-
-
-
-
-
-
-
-
-
- */

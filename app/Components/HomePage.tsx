@@ -35,7 +35,11 @@ export default function Home({
   setReqState,
   isReplying,
   setIsReplying,
+  Refresh,
+  setRefresh,
 }: {
+  Refresh: number;
+  setRefresh: (x: number) => void;
   isReplying: boolean;
   setIsReplying: (x: boolean) => void;
   setReqState: (x: TypeState) => void;
@@ -114,12 +118,12 @@ export default function Home({
           }
         }
       } catch (error: any) {
-        setDevMessage(error.toString());
+        setDevMessage(<Text>Connection failed</Text>);
 
         setReqState("offline");
       }
     }
-  }, [User, devMessage, isLogged]);
+  }, [User, setDevMessage, Refresh, isLogged]);
 
   return (
     <View
@@ -133,7 +137,7 @@ export default function Home({
       {isReplying ? undefined : (
         <View style={[CSS.HomeContainer]}>
           {ReqState === "requested" ? (
-            <ClientDashboard User={User} RequestStatus={RequestStatus} />
+            <ClientDashboard setRefresh={setRefresh} User={User} RequestStatus={RequestStatus} />
           ) : undefined}
           {ReqState === "requested" ? undefined : (
             <View style={[CSS.HomeContainer]}>
@@ -191,6 +195,8 @@ export default function Home({
 
       {isLogged ? (
         <Messager
+        setRefresh={setRefresh}
+          clientEmail={undefined}
           User={User}
           hideDevText={hideDevText}
           setIsReplying={setIsReplying}
@@ -223,12 +229,12 @@ export function ParseMessage(data: string, User: any) {
         <View
           style={[
             CSS.messageItem,
-            data[0].includes("Client") ? CSS.replyClient : CSS.replyAdmin,
+            data[0].includes("Admin") ? CSS.replyClient : CSS.replyAdmin,
           ]}
           key={index}
         >
           <Text style={[CSS.senderName]}>
-            {data[0].includes("Client") ? User.username : data[0]}
+            {data[0].includes("Admin") ? "Developer" : data[0]}
           </Text>
           <Text style={[CSS.Text]}>{data[1]}</Text>
           <Text style={[CSS.replyTime]}>{data[2]}</Text>
